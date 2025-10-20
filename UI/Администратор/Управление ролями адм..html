@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsureFlow - Управление ролями</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 70px;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo-icon {
+            color: #1976d2;
+            font-size: 32px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1976d2;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: #1a237e;
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: #546e7a;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid #e0e0e0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #757575;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #f5f5f5;
+            color: #d32f2f;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            padding: 0 1.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #546e7a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 1.5rem;
+            text-decoration: none;
+            color: #37474f;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #f3f7ff;
+            color: #1976d2;
+        }
+
+        .nav-item.active {
+            background: #f3f7ff;
+            color: #1976d2;
+            border-left-color: #1976d2;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .main-content {
+            min-height: 600px;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-subtitle {
+            color: #546e7a;
+        }
+
+        /* Статистика ролей */
+        .roles-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #546e7a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .icon-primary {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .icon-success {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .icon-warning {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .icon-info {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-description {
+            font-size: 0.875rem;
+            color: #546e7a;
+        }
+
+        /* Панель действий */
+        .actions-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-input {
+            background: none;
+            border: none;
+            outline: none;
+            flex: 1;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .search-icon {
+            color: #546e7a;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .btn-outline {
+            background: white;
+            color: #1976d2;
+            border: 1px solid #1976d2;
+        }
+
+        .btn-outline:hover {
+            background: #f5f9ff;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        /* Сетка ролей */
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .role-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border-left: 4px solid #1976d2;
+        }
+
+        .role-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .role-card.admin {
+            border-left-color: #c62828;
+        }
+
+        .role-card.manager {
+            border-left-color: #1976d2;
+        }
+
+        .role-card.analyst {
+            border-left-color: #2e7d32;
+        }
+
+        .role-card.support {
+            border-left-color: #ef6c00;
+        }
+
+        .role-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .role-info {
+            flex: 1;
+        }
+
+        .role-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+            margin-bottom: 0.25rem;
+        }
+
+        .role-description {
+            color: #546e7a;
+            font-size: 0.9rem;
+        }
+
+        .role-users {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #546e7a;
+            font-size: 0.8rem;
+        }
+
+        .role-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #1976d2;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 4px;
+            transition: background 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            background: #f3f7ff;
+        }
+
+        .action-btn.delete {
+            color: #f44336;
+        }
+
+        .action-btn.delete:hover {
+            background: #ffebee;
+        }
+
+        .permissions-list {
+            margin: 1rem 0;
+        }
+
+        .permission-category {
+            margin-bottom: 1rem;
+        }
+
+        .category-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #37474f;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .permission-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .permission-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0;
+        }
+
+        .permission-checkbox {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .permission-checkbox.checked {
+            background: #1976d2;
+            border-color: #1976d2;
+            color: white;
+        }
+
+        .permission-checkbox.checked::after {
+            content: "✓";
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .permission-label {
+            font-size: 0.8rem;
+            color: #37474f;
+            cursor: pointer;
+        }
+
+        .permission-label.disabled {
+            color: #bdbdbd;
+        }
+
+        /* Таблица назначений */
+        .assignments-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .assignments-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .assignments-table th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #37474f;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .assignments-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+
+        .assignments-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #1976d2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .user-email {
+            color: #546e7a;
+            font-size: 0.8rem;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .role-admin {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .role-manager {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .role-analyst {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .role-support {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .assignment-date {
+            color: #546e7a;
+            font-size: 0.8rem;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #37474f;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .permissions-section {
+            margin: 1.5rem 0;
+        }
+
+        .permissions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .permission-group {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .permission-group-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #37474f;
+            margin-bottom: 0.75rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .roles-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions-panel {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                max-width: none;
+            }
+            
+            .permissions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .roles-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+            
+            .role-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .role-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="admin-dashboard.html" class="logo">
+                <span class="material-icons logo-icon">business_center</span>
+                <span class="logo-text">InsureFlow</span>
+            </a>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <div class="user-name">Петров Алексей</div>
+                    <div class="user-role">Системный администратор</div>
+                </div>
+                <button class="logout-btn" onclick="location.href='login-index.html'">
+                    <span class="material-icons">logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-title">Главная</div>
+                <a href="admin-dashboard.html" class="nav-item">
+                    <span class="material-icons nav-icon">dashboard</span>
+                    Панель управления
+                </a>
+                <a href="admin-approvals.html" class="nav-item">
+                    <span class="material-icons nav-icon">approval</span>
+                    Одобрение договоров
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Управление пользователями</div>
+                <a href="admin-users.html" class="nav-item">
+                    <span class="material-icons nav-icon">people</span>
+                    Управление сотрудниками
+                </a>
+                <a href="admin-clients.html" class="nav-item">
+                    <span class="material-icons nav-icon">groups</span>
+                    Управление клиентами
+                </a>
+                <a href="admin-access.html" class="nav-item">
+                    <span class="material-icons nav-icon">lock</span>
+                    Управление доступом
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Управление системой</div>
+                <a href="admin-roles.html" class="nav-item active">
+                    <span class="material-icons nav-icon">admin_panel_settings</span>
+                    Управление ролями
+                </a>
+                <a href="admin-tariffs.html" class="nav-item">
+                    <span class="material-icons nav-icon">attach_money</span>
+                    Управление тарифами
+                </a>
+                <a href="admin-settings.html" class="nav-item">
+                    <span class="material-icons nav-icon">settings</span>
+                    Системные настройки
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Мониторинг</div>
+                <a href="admin-monitoring.html" class="nav-item">
+                    <span class="material-icons nav-icon">monitoring</span>
+                    Мониторинг системы
+                </a>
+                <a href="admin-analytics.html" class="nav-item">
+                    <span class="material-icons nav-icon">analytics</span>
+                    Аналитика системы
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span class="material-icons">admin_panel_settings</span>
+                    Управление ролями
+                </h1>
+                <p class="page-subtitle">Создание и настройка ролей пользователей системы с различными уровнями доступа</p>
+            </div>
+
+            <!-- Статистика ролей -->
+            <div class="roles-stats">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Всего ролей</div>
+                        <div class="stat-icon icon-primary">
+                            <span class="material-icons">admin_panel_settings</span>
+                        </div>
+                    </div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-description">Системные и пользовательские</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Активные пользователи</div>
+                        <div class="stat-icon icon-success">
+                            <span class="material-icons">people</span>
+                        </div>
+                    </div>
+                    <div class="stat-value">47</div>
+                    <div class="stat-description">С назначенными ролями</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Кастомные роли</div>
+                        <div class="stat-icon icon-warning">
+                            <span class="material-icons">settings</span>
+                        </div>
+                    </div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-description">Создано администратором</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Последнее изменение</div>
+                        <div class="stat-icon icon-info">
+                            <span class="material-icons">update</span>
+                        </div>
+                    </div>
+                    <div class="stat-value">2 дня</div>
+                    <div class="stat-description">Назад</div>
+                </div>
+            </div>
+
+            <!-- Панель действий -->
+            <div class="actions-panel">
+                <div class="search-box">
+                    <span class="material-icons search-icon">search</span>
+                    <input type="text" class="search-input" placeholder="Поиск ролей...">
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-outline">
+                        <span class="material-icons">filter_list</span>
+                        Фильтры
+                    </button>
+                    <button class="btn btn-primary" onclick="showCreateRoleModal()">
+                        <span class="material-icons">add</span>
+                        Создать роль
+                    </button>
+                </div>
+            </div>
+
+            <!-- Сетка ролей -->
+            <div class="roles-grid">
+                <!-- Роль Администратор -->
+                <div class="role-card admin">
+                    <div class="role-header">
+                        <div class="role-info">
+                            <h3 class="role-name">Администратор</h3>
+                            <p class="role-description">Полный доступ ко всем функциям системы</p>
+                            <div class="role-users">
+                                <span class="material-icons" style="font-size: 16px;">people</span>
+                                3 пользователя
+                            </div>
+                        </div>
+                        <div class="role-actions">
+                            <button class="action-btn" onclick="editRole('admin')">
+                                <span class="material-icons">edit</span>
+                            </button>
+                            <button class="action-btn delete" onclick="deleteRole('admin')">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="permissions-list">
+                        <div class="permission-category">
+                            <div class="category-title">
+                                <span class="material-icons" style="font-size: 16px;">security</span>
+                                Администрирование
+                            </div>
+                            <div class="permission-items">
+                                <div class="permission-item">
+                                    <div class="permission-checkbox checked"></div>
+                                    <span class="permission-label">Управление пользователями</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox checked"></div>
+                                    <span class="permission-label">Настройка системы</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox checked"></div>
+                                    <span class="permission-label">Управление ролями</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="permission-category">
+                            <div class="category-title">
+                                <span class="material-icons" style="font-size: 16px;">description</span>
+                                Договоры
+                            </div>
+                            <div class="permission-items">
+                                <div class="permission-item">
+                                    <div class="permission-checkbox checked"></div>
+                                    <span class="permission-label">Просмотр всех договоров</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox checked"></div>
+                                    <span class="permission-label">Одобрение договоров</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Роль Менеджер -->
+                <div class="role-card manager">
+                    <div class="role-header">
+                        <div class="role-info">
+                            <h3 class="role-name">Менеджер</h3>
+                            <p class="role-description">Управление договорами и клиентами</p>
+                            <div class="role-users">
+                                <span class="material-icons" style="font-size: 16px;">people</span>
+                                15 пользователей
+                            </div>
+                        </div>
+                        <div class="role-actions">
+                            <button class="action-btn" onclick="editRole('manager')">
+                                <span class="material-icons">edit</span>
+                            </button>
+                            <button class="action-btn delete" onclick="deleteRole('manager')">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="permissions-list">
+                        <div class="permission-category">
+                            <div class="category-title">
+                                <span class="material-icons" style="font-size: 16px;">description</span>
+                                Договоры
+                            </div>
+                            <div class="permission-items">
+                                <div class="permission-item">
+                                    <div class="permission-checkbox checked"></div>
+                                    <span class="permission-label">Создание договоров</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox checked"></div>
+                                    <span class="permission-label">Редактирование договоров</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox"></div>
+                                    <span class="permission-label disabled">Одобрение договоров</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="permission-category">
+                            <div class="category-title">
+                                <span class="material-icons" style="font-size: 16px;">groups</span>
+                                Клиенты
+                            </div>
+                            <div class="permission-items">
+                                <div class="permission-item">
+                                    <div class="permission-checkbox checked"></div>
+                                    <span class="permission-label">Управление клиентами</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Роль Аналитик -->
+                <div class="role-card analyst">
+                    <div class="role-header">
+                        <div class="role-info">
+                            <h3 class="role-name">Аналитик</h3>
+                            <p class="role-description">Просмотр отчетов и аналитических данных</p>
+                            <div class="role-users">
+                                <span class="material-icons" style="font-size: 16px;">people</span>
+                                8 пользователей
+                            </div>
+                        </div>
+                        <div class="role-actions">
+                            <button class="action-btn" onclick="editRole('analyst')">
+                                <span class="material-icons">edit</span>
+                            </button>
+                            <button class="action-btn delete" onclick="deleteRole('analyst')">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="permissions-list">
+                        <div class="permission-category">
+                            <div class="category-title">
+                                <span class="material-icons" style="font-size: 16px;">assessment</span>
+                                Отчетность
+                            </div>
+                            <div class="permission-items">
+                                <div class="permission-item">
+                                    <div class="permission-checkbox checked"></div>
+                                    <span class="permission-label">Просмотр отчетов</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox checked"></div>
+                                    <span class="permission-label">Экспорт данных</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="permission-category">
+                            <div class="category-title">
+                                <span class="material-icons" style="font-size: 16px;">analytics</span>
+                                Аналитика
+                            </div>
+                            <div class="permission-items">
+                                <div class="permission-item">
+                                    <div class="permission-checkbox checked"></div>
+                                    <span class="permission-label">Доступ к аналитике</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Роль Поддержка -->
+                <div class="role-card support">
+                    <div class="role-header">
+                        <div class="role-info">
+                            <h3 class="role-name">Служба поддержки</h3>
+                            <p class="role-description">Работа с клиентами и страховыми случаями</p>
+                            <div class="role-users">
+                                <span class="material-icons" style="font-size: 16px;">people</span>
+                                21 пользователь
+                            </div>
+                        </div>
+                        <div class="role-actions">
+                            <button class="action-btn" onclick="editRole('support')">
+                                <span class="material-icons">edit</span>
+                            </button>
+                            <button class="action-btn delete" onclick="deleteRole('support')">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="permissions-list">
+                        <div class="permission-category">
+                            <div class="category-title">
+                                <span class="material-icons" style="font-size: 16px;">support_agent</span>
+                                Поддержка
+                            </div>
+                            <div class="permission-items">
+                                <div class="permission-item">
+                                    <div class="permission-checkbox checked"></div>
+                                    <span class="permission-label">Регистрация случаев</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox checked"></div>
+                                    <span class="permission-label">Обработка запросов</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="permission-category">
+                            <div class="category-title">
+                                <span class="material-icons" style="font-size: 16px;">visibility</span>
+                                Просмотр
+                            </div>
+                            <div class="permission-items">
+                                <div class="permission-item">
+                                    <div class="permission-checkbox checked"></div>
+                                    <span class="permission-label">Просмотр договоров</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox"></div>
+                                    <span class="permission-label disabled">Редактирование договоров</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица назначений ролей -->
+            <div class="assignments-section">
+                <div class="section-header">
+                    <h3 class="section-title">Назначения ролей пользователям</h3>
+                    <button class="btn btn-outline">
+                        <span class="material-icons">file_download</span>
+                        Экспорт списка
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table class="assignments-table">
+                        <thead>
+                            <tr>
+                                <th>Пользователь</th>
+                                <th>Роль</th>
+                                <th>Дата назначения</th>
+                                <th>Назначил</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">ПА</div>
+                                        <div class="user-details">
+                                            <div class="user-name">Петров Алексей</div>
+                                            <div class="user-email">a.petrov@insureflow.ru</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="role-badge role-admin">Администратор</span>
+                                </td>
+                                <td>
+                                    <div class="assignment-date">15.01.2023</div>
+                                </td>
+                                <td>Система</td>
+                                <td>
+                                    <div class="role-actions">
+                                        <button class="action-btn" onclick="changeUserRole(1)">
+                                            <span class="material-icons">swap_horiz</span>
+                                        </button>
+                                        <button class="action-btn delete" onclick="removeUserRole(1)">
+                                            <span class="material-icons">person_remove</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">ИИ</div>
+                                        <div class="user-details">
+                                            <div class="user-name">Иванов Иван</div>
+                                            <div class="user-email">i.ivanov@insureflow.ru</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="role-badge role-manager">Менеджер</span>
+                                </td>
+                                <td>
+                                    <div class="assignment-date">20.03.2023</div>
+                                </td>
+                                <td>Петров А.</td>
+                                <td>
+                                    <div class="role-actions">
+                                        <button class="action-btn" onclick="changeUserRole(2)">
+                                            <span class="material-icons">swap_horiz</span>
+                                        </button>
+                                        <button class="action-btn delete" onclick="removeUserRole(2)">
+                                            <span class="material-icons">person_remove</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">СК</div>
+                                        <div class="user-details">
+                                            <div class="user-name">Сидоров Кирилл</div>
+                                            <div class="user-email">k.sidorov@insureflow.ru</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="role-badge role-analyst">Аналитик</span>
+                                </td>
+                                <td>
+                                    <div class="assignment-date">10.11.2023</div>
+                                </td>
+                                <td>Петров А.</td>
+                                <td>
+                                    <div class="role-actions">
+                                        <button class="action-btn" onclick="changeUserRole(3)">
+                                            <span class="material-icons">swap_horiz</span>
+                                        </button>
+                                        <button class="action-btn delete" onclick="removeUserRole(3)">
+                                            <span class="material-icons">person_remove</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Модальное окно создания роли -->
+    <div id="createRoleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Создание новой роли</h3>
+                <span class="close" onclick="closeCreateRoleModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Название роли</label>
+                    <input type="text" class="form-input" id="roleName" placeholder="Введите название роли">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Описание роли</label>
+                    <textarea class="form-textarea" id="roleDescription" placeholder="Опишите назначение и возможности этой роли"></textarea>
+                </div>
+
+                <div class="permissions-section">
+                    <h4 style="margin-bottom: 1rem; color: #37474f;">Настройка прав доступа</h4>
+                    <div class="permissions-grid">
+                        <div class="permission-group">
+                            <div class="permission-group-title">Управление договорами</div>
+                            <div class="permission-items">
+                                <div class="permission-item">
+                                    <div class="permission-checkbox" onclick="togglePermission(this)"></div>
+                                    <span class="permission-label">Просмотр договоров</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox" onclick="togglePermission(this)"></div>
+                                    <span class="permission-label">Создание договоров</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox" onclick="togglePermission(this)"></div>
+                                    <span class="permission-label">Редактирование договоров</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox" onclick="togglePermission(this)"></div>
+                                    <span class="permission-label">Одобрение договоров</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="permission-group">
+                            <div class="permission-group-title">Управление клиентами</div>
+                            <div class="permission-items">
+                                <div class="permission-item">
+                                    <div class="permission-checkbox" onclick="togglePermission(this)"></div>
+                                    <span class="permission-label">Просмотр клиентов</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox" onclick="togglePermission(this)"></div>
+                                    <span class="permission-label">Добавление клиентов</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox" onclick="togglePermission(this)"></div>
+                                    <span class="permission-label">Редактирование клиентов</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox" onclick="togglePermission(this)"></div>
+                                    <span class="permission-label">Удаление клиентов</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="permission-group">
+                            <div class="permission-group-title">Отчетность</div>
+                            <div class="permission-items">
+                                <div class="permission-item">
+                                    <div class="permission-checkbox" onclick="togglePermission(this)"></div>
+                                    <span class="permission-label">Просмотр отчетов</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox" onclick="togglePermission(this)"></div>
+                                    <span class="permission-label">Создание отчетов</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox" onclick="togglePermission(this)"></div>
+                                    <span class="permission-label">Экспорт данных</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="permission-group">
+                            <div class="permission-group-title">Администрирование</div>
+                            <div class="permission-items">
+                                <div class="permission-item">
+                                    <div class="permission-checkbox" onclick="togglePermission(this)"></div>
+                                    <span class="permission-label">Управление пользователями</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox" onclick="togglePermission(this)"></div>
+                                    <span class="permission-label">Настройка системы</span>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="permission-checkbox" onclick="togglePermission(this)"></div>
+                                    <span class="permission-label">Просмотр логов</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-outline" onclick="closeCreateRoleModal()">Отмена</button>
+                    <button class="btn btn-primary" onclick="createRole()">Создать роль</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showCreateRoleModal() {
+            document.getElementById('createRoleModal').style.display = 'block';
+        }
+
+        function closeCreateRoleModal() {
+            document.getElementById('createRoleModal').style.display = 'none';
+            resetRoleForm();
+        }
+
+        function resetRoleForm() {
+            document.getElementById('roleName').value = '';
+            document.getElementById('roleDescription').value = '';
+            document.querySelectorAll('.permission-checkbox').forEach(checkbox => {
+                checkbox.classList.remove('checked');
+            });
+        }
+
+        function togglePermission(element) {
+            element.classList.toggle('checked');
+        }
+
+        function createRole() {
+            const roleName = document.getElementById('roleName').value.trim();
+            const roleDescription = document.getElementById('roleDescription').value.trim();
+
+            if (!roleName) {
+                alert('Пожалуйста, введите название роли');
+                return;
+            }
+
+            if (!roleDescription) {
+                alert('Пожалуйста, добавьте описание роли');
+                return;
+            }
+
+            const selectedPermissions = document.querySelectorAll('.permission-checkbox.checked').length;
+            if (selectedPermissions === 0) {
+                alert('Пожалуйста, выберите хотя бы одно право доступа для роли');
+                return;
+            }
+
+            alert(`Роль "${roleName}" успешно создана!`);
+            closeCreateRoleModal();
+        }
+
+        function editRole(roleId) {
+            alert(`Редактирование роли: ${roleId}`);
+        }
+
+        function deleteRole(roleId) {
+            if (confirm(`Вы уверены, что хотите удалить роль "${roleId}"? Это действие нельзя отменить.`)) {
+                alert(`Роль "${roleId}" удалена`);
+            }
+        }
+
+        function changeUserRole(userId) {
+            alert(`Изменение роли пользователя с ID: ${userId}`);
+        }
+
+        function removeUserRole(userId) {
+            if (confirm('Вы уверены, что хотите удалить роль у этого пользователя?')) {
+                alert(`Роль пользователя с ID: ${userId} удалена`);
+            }
+        }
+
+        // Закрытие модального окна при клике вне его
+        window.onclick = function(event) {
+            const modal = document.getElementById('createRoleModal');
+            if (event.target === modal) {
+                closeCreateRoleModal();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Страница управления ролями загружена');
+        });
+    </script>
+</body>
+</html>

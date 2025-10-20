@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsureFlow - Аналитика портфеля</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 70px;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo-icon {
+            color: #1976d2;
+            font-size: 32px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1976d2;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: #1a237e;
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: #546e7a;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid #e0e0e0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #757575;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #f5f5f5;
+            color: #d32f2f;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            padding: 0 1.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #546e7a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 1.5rem;
+            text-decoration: none;
+            color: #37474f;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #f3f7ff;
+            color: #1976d2;
+        }
+
+        .nav-item.active {
+            background: #f3f7ff;
+            color: #1976d2;
+            border-left-color: #1976d2;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .main-content {
+            min-height: 600px;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-subtitle {
+            color: #546e7a;
+        }
+
+        /* KPI показатели */
+        .kpi-dashboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .kpi-premium::before { background: linear-gradient(90deg, #1976d2, #42a5f5); }
+        .kpi-payouts::before { background: linear-gradient(90deg, #4caf50, #66bb6a); }
+        .kpi-loss-ratio::before { background: linear-gradient(90deg, #ff9800, #ffb74d); }
+        .kpi-profitability::before { background: linear-gradient(90deg, #9c27b0, #ba68c8); }
+
+        .kpi-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .kpi-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #546e7a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .kpi-trend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 2px 6px;
+            border-radius: 12px;
+        }
+
+        .trend-up {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .trend-down {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .trend-neutral {
+            background: #f5f5f5;
+            color: #757575;
+        }
+
+        .kpi-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-description {
+            font-size: 0.8rem;
+            color: #546e7a;
+        }
+
+        /* Основные графики */
+        .analytics-charts {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chart-btn {
+            background: none;
+            border: 1px solid #e0e0e0;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: #546e7a;
+            transition: all 0.3s;
+        }
+
+        .chart-btn.active {
+            background: #1976d2;
+            color: white;
+            border-color: #1976d2;
+        }
+
+        .chart-btn:hover:not(.active) {
+            background: #f5f5f5;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        .chart-placeholder {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px dashed #e0e0e0;
+        }
+
+        .chart-placeholder .material-icons {
+            font-size: 3rem;
+            color: #bdbdbd;
+            margin-bottom: 1rem;
+        }
+
+        .chart-placeholder-text {
+            color: #546e7a;
+            text-align: center;
+        }
+
+        /* Детальная аналитика */
+        .detailed-analytics {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .analytics-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .analytics-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .analytics-tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 1.5rem;
+        }
+
+        .analytics-tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #546e7a;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .analytics-tab.active {
+            color: #1976d2;
+            border-bottom-color: #1976d2;
+            font-weight: 500;
+        }
+
+        .analytics-tab:hover:not(.active) {
+            color: #1976d2;
+        }
+
+        .analytics-content {
+            display: none;
+        }
+
+        .analytics-content.active {
+            display: block;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: #546e7a;
+        }
+
+        /* Рекомендации */
+        .recommendations {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .recommendations-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .recommendations-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .recommendations-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .recommendation-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #1976d2;
+        }
+
+        .recommendation-icon {
+            color: #1976d2;
+            margin-top: 0.25rem;
+        }
+
+        .recommendation-content {
+            flex: 1;
+        }
+
+        .recommendation-title {
+            font-weight: 600;
+            color: #1a237e;
+            margin-bottom: 0.5rem;
+        }
+
+        .recommendation-description {
+            color: #546e7a;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .recommendation-impact {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #e8f5e8;
+            color: #2e7d32;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn-outline {
+            background: white;
+            color: #1976d2;
+            border: 1px solid #1976d2;
+        }
+
+        .btn-outline:hover {
+            background: #f5f9ff;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .kpi-dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .analytics-charts {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .kpi-dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .chart-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .analytics-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="client-dashboard.html" class="logo">
+                <span class="material-icons logo-icon">shield_check</span>
+                <span class="logo-text">InsureFlow</span>
+            </a>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <div class="user-name">Иванов Иван Иванович</div>
+                    <div class="user-role">Клиент</div>
+                </div>
+                <button class="logout-btn" onclick="location.href='login-index.html'">
+                    <span class="material-icons">logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-title">Основное</div>
+                <a href="client-dashboard.html" class="nav-item">
+                    <span class="material-icons nav-icon">dashboard</span>
+                    Главная панель
+                </a>
+                <a href="insurance-portfolio.html" class="nav-item">
+                    <span class="material-icons nav-icon">folder</span>
+                    Страховой портфель
+                </a>
+                <a href="insurance-contracts.html" class="nav-item">
+                    <span class="material-icons nav-icon">description</span>
+                    Договоры страхования
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Страховые случаи</div>
+                <a href="register-claim.html" class="nav-item">
+                    <span class="material-icons nav-icon">add_alert</span>
+                    Регистрация случая
+                </a>
+                <a href="claims-status.html" class="nav-item">
+                    <span class="material-icons nav-icon">track_changes</span>
+                    Статус случаев
+                </a>
+                <a href="payouts.html" class="nav-item">
+                    <span class="material-icons nav-icon">payments</span>
+                    Процесс выплат
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Отчетность</div>
+                <a href="reports.html" class="nav-item">
+                    <span class="material-icons nav-icon">assessment</span>
+                    Формирование отчетов
+                </a>
+                <a href="analytics.html" class="nav-item active">
+                    <span class="material-icons nav-icon">analytics</span>
+                    Аналитика портфеля
+                </a>
+                <a href="export.html" class="nav-item">
+                    <span class="material-icons nav-icon">download</span>
+                    Экспорт документов
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span class="material-icons">analytics</span>
+                    Аналитика портфеля
+                </h1>
+                <p class="page-subtitle">Глубокая аналитика страхового портфеля и ключевые показатели эффективности (KPI)</p>
+            </div>
+
+            <!-- KPI показатели -->
+            <div class="kpi-dashboard">
+                <div class="kpi-card kpi-premium">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Страховые премии</div>
+                        <div class="kpi-trend trend-up">
+                            <span class="material-icons" style="font-size: 16px;">trending_up</span>
+                            +12.5%
+                        </div>
+                    </div>
+                    <div class="kpi-value">₽245,600</div>
+                    <div class="kpi-description">Общая сумма уплаченных премий</div>
+                </div>
+
+                <div class="kpi-card kpi-payouts">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Страховые выплаты</div>
+                        <div class="kpi-trend trend-down">
+                            <span class="material-icons" style="font-size: 16px;">trending_down</span>
+                            -8.2%
+                        </div>
+                    </div>
+                    <div class="kpi-value">₽85,400</div>
+                    <div class="kpi-description">Общая сумма выплат по случаям</div>
+                </div>
+
+                <div class="kpi-card kpi-loss-ratio">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Уровень убыточности</div>
+                        <div class="kpi-trend trend-down">
+                            <span class="material-icons" style="font-size: 16px;">trending_down</span>
+                            -3.1%
+                        </div>
+                    </div>
+                    <div class="kpi-value">34.8%</div>
+                    <div class="kpi-description">Отношение выплат к премиям</div>
+                </div>
+
+                <div class="kpi-card kpi-profitability">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Рентабельность</div>
+                        <div class="kpi-trend trend-up">
+                            <span class="material-icons" style="font-size: 16px;">trending_up</span>
+                            +5.7%
+                        </div>
+                    </div>
+                    <div class="kpi-value">65.2%</div>
+                    <div class="kpi-description">Эффективность портфеля</div>
+                </div>
+            </div>
+
+            <!-- Основные графики -->
+            <div class="analytics-charts">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Динамика портфеля</h3>
+                        <div class="chart-actions">
+                            <button class="chart-btn active" onclick="changeChartPeriod('month')">Месяц</button>
+                            <button class="chart-btn" onclick="changeChartPeriod('quarter')">Квартал</button>
+                            <button class="chart-btn" onclick="changeChartPeriod('year')">Год</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-placeholder">
+                            <span class="material-icons">show_chart</span>
+                            <div class="chart-placeholder-text">
+                                График динамики страхового портфеля<br>
+                                <small>Показывает изменение премий и выплат во времени</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Распределение по типам</h3>
+                        <div class="chart-actions">
+                            <button class="chart-btn active" onclick="changeChartType('premium')">По премиям</button>
+                            <button class="chart-btn" onclick="changeChartType('payouts')">По выплатам</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-placeholder">
+                            <span class="material-icons">pie_chart</span>
+                            <div class="chart-placeholder-text">
+                                Круговая диаграмма распределения<br>
+                                <small>Структура портфеля по типам страхования</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Детальная аналитика -->
+            <div class="detailed-analytics">
+                <div class="analytics-header">
+                    <h3 class="analytics-title">Детальная аналитика</h3>
+                    <button class="btn btn-outline">
+                        <span class="material-icons">download</span>
+                        Экспорт данных
+                    </button>
+                </div>
+
+                <div class="analytics-tabs">
+                    <button class="analytics-tab active" onclick="openAnalyticsTab('performance')">Эффективность</button>
+                    <button class="analytics-tab" onclick="openAnalyticsTab('risks')">Анализ рисков</button>
+                    <button class="analytics-tab" onclick="openAnalyticsTab('comparison')">Сравнительный анализ</button>
+                    <button class="analytics-tab" onclick="openAnalyticsTab('forecast')">Прогнозы</button>
+                </div>
+
+                <!-- Вкладка эффективности -->
+                <div id="performance-tab" class="analytics-content active">
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <div class="metric-value">94.2%</div>
+                            <div class="metric-label">Коэффициент выплат</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">12 дн.</div>
+                            <div class="metric-label">Средний срок выплаты</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">2.3</div>
+                            <div class="metric-label">Частота убытков</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">₽37,200</div>
+                            <div class="metric-label">Средняя сумма убытка</div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: #1a237e; margin-bottom: 0.5rem;">Анализ эффективности</h4>
+                        <p style="color: #546e7a; font-size: 0.9rem;">
+                            Портфель демонстрирует стабильную эффективность с положительной динамикой. 
+                            Уровень убыточности снизился на 3.1% по сравнению с предыдущим периодом, 
+                            что свидетельствует об улучшении управления рисками.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Вкладка анализа рисков -->
+                <div id="risks-tab" class="analytics-content">
+                    <div style="background: #fff3e0; padding: 1rem; border-radius: 8px; border-left: 4px solid #ff9800;">
+                        <h4 style="color: #ef6c00; margin-bottom: 0.5rem;">Оценка рисков</h4>
+                        <p style="color: #546e7a; font-size: 0.9rem;">
+                            Наибольший уровень риска сосредоточен в автостраховании (45% от общего объема убытков). 
+                            Рекомендуется пересмотреть условия по полисам КАСКО и усилить контроль за оформлением ДТП.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Рекомендации -->
+            <div class="recommendations">
+                <div class="recommendations-header">
+                    <h3 class="recommendations-title">Рекомендации по оптимизации</h3>
+                    <button class="btn btn-primary">
+                        <span class="material-icons">auto_awesome</span>
+                        Применить оптимизацию
+                    </button>
+                </div>
+
+                <div class="recommendations-list">
+                    <div class="recommendation-item">
+                        <span class="material-icons recommendation-icon">trending_up</span>
+                        <div class="recommendation-content">
+                            <div class="recommendation-title">Диверсификация портфеля</div>
+                            <div class="recommendation-description">
+                                Рекомендуется увеличить долю страхования недвижимости до 35% для снижения 
+                                зависимости от автострахования и улучшения баланса рисков.
+                            </div>
+                            <span class="recommendation-impact">Влияние: +15% к рентабельности</span>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-item">
+                        <span class="material-icons recommendation-icon">savings</span>
+                        <div class="recommendation-content">
+                            <div class="recommendation-title">Оптимизация франшиз</div>
+                            <div class="recommendation-description">
+                                Увеличение размера франшизы по полисам КАСКО на 10% может снизить 
+                                частоту мелких убытков без существенного влияния на клиентскую базу.
+                            </div>
+                            <span class="recommendation-impact">Экономия: ~₽12,000 в месяц</span>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-item">
+                        <span class="material-icons recommendation-icon">warning</span>
+                        <div class="recommendation-content">
+                            <div class="recommendation-title">Усиление контроля рисков</div>
+                            <div class="recommendation-description">
+                                Внедрение системы скоринга для оценки рисков при оформлении новых полисов 
+                                автострахования позволит снизить уровень убыточности на 5-7%.
+                            </div>
+                            <span class="recommendation-impact">Снижение убытков: до 7%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function changeChartPeriod(period) {
+            // Убрать активный класс со всех кнопок периода
+            document.querySelectorAll('.chart-actions .chart-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Добавить активный класс выбранной кнопке
+            event.target.classList.add('active');
+            
+            // Здесь будет логика обновления графика
+            console.log('Период графика изменен на:', period);
+        }
+
+        function changeChartType(type) {
+            // Убрать активный класс со всех кнопок типа
+            document.querySelectorAll('.chart-actions .chart-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Добавить активный класс выбранной кнопке
+            event.target.classList.add('active');
+            
+            // Здесь будет логика изменения типа графика
+            console.log('Тип графика изменен на:', type);
+        }
+
+        function openAnalyticsTab(tabName) {
+            // Скрыть все вкладки
+            document.querySelectorAll('.analytics-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Убрать активный класс со всех кнопок вкладок
+            document.querySelectorAll('.analytics-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Показать выбранную вкладку
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Добавить активный класс выбранной кнопке
+            event.target.classList.add('active');
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            // Здесь можно добавить инициализацию графиков
+            // Например, с использованием Chart.js или другой библиотеки
+        });
+    </script>
+</body>
+</html>

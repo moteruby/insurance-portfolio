@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsureFlow - Регистрация страхового случая</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 70px;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo-icon {
+            color: #1976d2;
+            font-size: 32px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1976d2;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: #1a237e;
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: #546e7a;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid #e0e0e0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #757575;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #f5f5f5;
+            color: #d32f2f;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            padding: 0 1.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #546e7a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 1.5rem;
+            text-decoration: none;
+            color: #37474f;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #f3f7ff;
+            color: #1976d2;
+        }
+
+        .nav-item.active {
+            background: #f3f7ff;
+            color: #1976d2;
+            border-left-color: #1976d2;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .main-content {
+            min-height: 600px;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-subtitle {
+            color: #546e7a;
+        }
+
+        /* Форма регистрации */
+        .claim-form {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-subtitle {
+            font-size: 0.9rem;
+            color: #546e7a;
+            margin-bottom: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #37474f;
+        }
+
+        .form-label .required {
+            color: #d32f2f;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-full {
+            grid-column: 1 / -1;
+        }
+
+        /* Загрузка файлов */
+        .file-upload {
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: border-color 0.3s;
+            cursor: pointer;
+        }
+
+        .file-upload:hover {
+            border-color: #1976d2;
+        }
+
+        .file-upload-icon {
+            font-size: 3rem;
+            color: #1976d2;
+            margin-bottom: 1rem;
+        }
+
+        .file-upload-text {
+            color: #546e7a;
+            margin-bottom: 1rem;
+        }
+
+        .file-upload-btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .uploaded-files {
+            margin-top: 1rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-name {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .file-remove {
+            background: none;
+            border: none;
+            color: #d32f2f;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .file-remove:hover {
+            background: #ffebee;
+        }
+
+        /* Чекбоксы */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-label {
+            font-size: 0.9rem;
+            color: #37474f;
+            line-height: 1.4;
+        }
+
+        .checkbox-label a {
+            color: #1976d2;
+            text-decoration: none;
+        }
+
+        .checkbox-label a:hover {
+            text-decoration: underline;
+        }
+
+        /* Кнопки */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn-outline {
+            background: white;
+            color: #1976d2;
+            border: 1px solid #1976d2;
+        }
+
+        .btn-outline:hover {
+            background: #f5f9ff;
+        }
+
+        /* Информационные блоки */
+        .info-box {
+            background: #e3f2fd;
+            border: 1px solid #1976d2;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-title {
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-text {
+            color: #37474f;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="client-dashboard.html" class="logo">
+                <span class="material-icons logo-icon">shield_check</span>
+                <span class="logo-text">InsureFlow</span>
+            </a>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <div class="user-name">Иванов Иван Иванович</div>
+                    <div class="user-role">Клиент</div>
+                </div>
+                <button class="logout-btn" onclick="location.href='login-index.html'">
+                    <span class="material-icons">logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-title">Основное</div>
+                <a href="client-dashboard.html" class="nav-item">
+                    <span class="material-icons nav-icon">dashboard</span>
+                    Главная панель
+                </a>
+                <a href="insurance-portfolio.html" class="nav-item">
+                    <span class="material-icons nav-icon">folder</span>
+                    Страховой портфель
+                </a>
+                <a href="insurance-contracts.html" class="nav-item">
+                    <span class="material-icons nav-icon">description</span>
+                    Договоры страхования
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Страховые случаи</div>
+                <a href="register-claim.html" class="nav-item active">
+                    <span class="material-icons nav-icon">add_alert</span>
+                    Регистрация случая
+                </a>
+                <a href="claims-status.html" class="nav-item">
+                    <span class="material-icons nav-icon">track_changes</span>
+                    Статус случаев
+                </a>
+                <a href="payouts.html" class="nav-item">
+                    <span class="material-icons nav-icon">payments</span>
+                    Процесс выплат
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Отчетность</div>
+                <a href="reports.html" class="nav-item">
+                    <span class="material-icons nav-icon">assessment</span>
+                    Формирование отчетов
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <span class="material-icons nav-icon">analytics</span>
+                    Аналитика портфеля
+                </a>
+                <a href="export.html" class="nav-item">
+                    <span class="material-icons nav-icon">download</span>
+                    Экспорт документов
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span class="material-icons">add_alert</span>
+                    Регистрация страхового случая
+                </h1>
+                <p class="page-subtitle">Заполните форму для регистрации нового страхового случая</p>
+            </div>
+
+            <div class="info-box">
+                <div class="info-title">
+                    <span class="material-icons">info</span>
+                    Важная информация
+                </div>
+                <div class="info-text">
+                    • Сообщите о страховом случае в течение 3 рабочих дней<br>
+                    • Подготовьте все необходимые документы<br>
+                    • Укажите точные данные о происшествии<br>
+                    • Приложите фотографии повреждений
+                </div>
+            </div>
+
+            <form class="claim-form" id="claimRegistrationForm">
+                <!-- Основная информация -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <span class="material-icons">info</span>
+                        Основная информация
+                    </h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">
+                                Выберите договор <span class="required">*</span>
+                            </label>
+                            <select class="form-select" required>
+                                <option value="">Выберите договор</option>
+                                <option value="AVT-2024-001">АВТ-2024-001 (ОСАГО)</option>
+                                <option value="KSK-2024-002">КСК-2024-002 (КАСКО)</option>
+                                <option value="KVR-2024-003">КВР-2024-003 (Квартира)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                Тип страхового случая <span class="required">*</span>
+                            </label>
+                            <select class="form-select" required>
+                                <option value="">Выберите тип</option>
+                                <option value="accident">ДТП</option>
+                                <option value="theft">Кража</option>
+                                <option value="fire">Пожар</option>
+                                <option value="flood">Затопление</option>
+                                <option value="damage">Повреждение имущества</option>
+                                <option value="health">Заболевание/Травма</option>
+                                <option value="other">Другое</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">
+                                Дата происшествия <span class="required">*</span>
+                            </label>
+                            <input type="datetime-local" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                Время происшествия <span class="required">*</span>
+                            </label>
+                            <input type="time" class="form-input" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Место происшествия -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <span class="material-icons">place</span>
+                        Место происшествия
+                    </h3>
+                    
+                    <div class="form-group form-full">
+                        <label class="form-label">
+                            Адрес <span class="required">*</span>
+                        </label>
+                        <input type="text" class="form-input" placeholder="г. Москва, ул. Примерная, д. 15" required>
+                    </div>
+
+                    <div class="form-group form-full">
+                        <label class="form-label">Описание места</label>
+                        <textarea class="form-textarea" placeholder="Опишите подробно место происшествия..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Описание происшествия -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <span class="material-icons">description</span>
+                        Описание происшествия
+                    </h3>
+                    
+                    <div class="form-group form-full">
+                        <label class="form-label">
+                            Подробное описание <span class="required">*</span>
+                        </label>
+                        <textarea class="form-textarea" placeholder="Опишите подробно, что произошло..." required></textarea>
+                    </div>
+
+                    <div class="form-group form-full">
+                        <label class="form-label">Причина происшествия</label>
+                        <input type="text" class="form-input" placeholder="Укажите причину, если известна">
+                    </div>
+
+                    <div class="form-group form-full">
+                        <label class="form-label">Предварительная оценка ущерба</label>
+                        <input type="number" class="form-input" placeholder="₽">
+                    </div>
+                </div>
+
+                <!-- Документы и файлы -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <span class="material-icons">attach_file</span>
+                        Документы и доказательства
+                    </h3>
+                    
+                    <p class="section-subtitle">
+                        Приложите фотографии повреждений, документы и другие доказательства
+                    </p>
+
+                    <div class="file-upload" onclick="document.getElementById('file-input').click()">
+                        <div class="file-upload-icon">
+                            <span class="material-icons">cloud_upload</span>
+                        </div>
+                        <div class="file-upload-text">
+                            Перетащите файлы сюда или нажмите для выбора<br>
+                            <small>Максимальный размер файла: 10MB</small>
+                        </div>
+                        <button type="button" class="file-upload-btn">Выбрать файлы</button>
+                        <input type="file" id="file-input" multiple style="display: none;" onchange="handleFileSelect(this.files)">
+                    </div>
+
+                    <div class="uploaded-files" id="uploaded-files">
+                        <!-- Файлы будут добавляться здесь -->
+                    </div>
+                </div>
+
+                <!-- Контактная информация -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <span class="material-icons">contact_phone</span>
+                        Контактная информация
+                    </h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">
+                                Контактный телефон <span class="required">*</span>
+                            </label>
+                            <input type="tel" class="form-input" placeholder="+7 (999) 999-99-99" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                Email для связи <span class="required">*</span>
+                            </label>
+                            <input type="email" class="form-input" placeholder="example@mail.ru" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-full">
+                        <label class="form-label">Предпочтительный способ связи</label>
+                        <select class="form-select">
+                            <option value="phone">Телефон</option>
+                            <option value="email">Email</option>
+                            <option value="any">Любой способ</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Соглашения -->
+                <div class="form-section">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="agree-terms" class="checkbox" required>
+                        <label for="agree-terms" class="checkbox-label">
+                            Я подтверждаю, что вся предоставленная информация является достоверной и полной.
+                            Я ознакомлен с правилами рассмотрения страховых случаев.
+                        </label>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="agree-processing" class="checkbox" required>
+                        <label for="agree-processing" class="checkbox-label">
+                            Я даю согласие на обработку моих персональных данных в соответствии с 
+                            <a href="#">политикой конфиденциальности</a>.
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Кнопки отправки -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="location.href='client-dashboard.html'">
+                        <span class="material-icons">arrow_back</span>
+                        Отмена
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="material-icons">send</span>
+                        Зарегистрировать случай
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <script>
+        function handleFileSelect(files) {
+            const uploadedFiles = document.getElementById('uploaded-files');
+            
+            for (let file of files) {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <span class="material-icons">description</span>
+                    <span class="file-name">${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                    <button type="button" class="file-remove" onclick="this.parentElement.remove()">
+                        <span class="material-icons">delete</span>
+                    </button>
+                `;
+                uploadedFiles.appendChild(fileItem);
+            }
+        }
+
+        document.getElementById('claimRegistrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Страховой случай успешно зарегистрирован! Номер заявки: SC-2024-001');
+            location.href = 'claims-status.html';
+        });
+
+        // Drag and drop functionality
+        const fileUpload = document.querySelector('.file-upload');
+        const fileInput = document.getElementById('file-input');
+
+        fileUpload.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#1976d2';
+            this.style.background = '#f3f7ff';
+        });
+
+        fileUpload.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#e0e0e0';
+            this.style.background = 'white';
+        });
+
+        fileUpload.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#e0e0e0';
+            this.style.background = 'white';
+            handleFileSelect(e.dataTransfer.files);
+        });
+    </script>
+</body>
+</html>

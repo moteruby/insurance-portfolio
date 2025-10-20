@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsureFlow - Личный кабинет</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        /* Шапка */
+        .header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 70px;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo-icon {
+            color: #1976d2;
+            font-size: 32px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1976d2;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: #1a237e;
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: #546e7a;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid #e0e0e0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #757575;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #f5f5f5;
+            color: #d32f2f;
+        }
+
+        /* Основной контент */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        /* Боковая панель */
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            padding: 0 1.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #546e7a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 1.5rem;
+            text-decoration: none;
+            color: #37474f;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #f3f7ff;
+            color: #1976d2;
+        }
+
+        .nav-item.active {
+            background: #f3f7ff;
+            color: #1976d2;
+            border-left-color: #1976d2;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Основная область */
+        .main-content {
+            min-height: 600px;
+        }
+
+        .welcome-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .welcome-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-subtitle {
+            color: #546e7a;
+            margin-bottom: 2rem;
+        }
+
+        /* Карточки статистики */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: #1976d2;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #546e7a;
+            font-size: 0.9rem;
+        }
+
+        /* Быстрые действия */
+        .quick-actions {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+            margin-bottom: 1.5rem;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .action-card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .action-card:hover {
+            background: #f3f7ff;
+            border-color: #1976d2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.15);
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            color: #1976d2;
+            margin-bottom: 0.75rem;
+        }
+
+        .action-title {
+            font-weight: 500;
+            color: #1a237e;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-description {
+            font-size: 0.875rem;
+            color: #546e7a;
+            line-height: 1.4;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-info {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка -->
+    <header class="header">
+        <div class="header-container">
+            <a href="client-dashboard.html" class="logo">
+                <span class="material-icons logo-icon">shield_check</span>
+                <span class="logo-text">InsureFlow</span>
+            </a>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <div class="user-name">Иванов Иван Иванович</div>
+                    <div class="user-role">Клиент</div>
+                </div>
+                <button class="logout-btn" onclick="location.href='login-index.html'">
+                    <span class="material-icons">logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <div class="dashboard-container">
+        <!-- Боковая панель -->
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-title">Основное</div>
+                <a href="client-dashboard.html" class="nav-item active">
+                    <span class="material-icons nav-icon">dashboard</span>
+                    Главная панель
+                </a>
+                <a href="insurance-portfolio.html" class="nav-item">
+                    <span class="material-icons nav-icon">folder</span>
+                    Страховой портфель
+                </a>
+                <a href="insurance-contracts.html" class="nav-item">
+                    <span class="material-icons nav-icon">description</span>
+                    Договоры страхования
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Страховые случаи</div>
+                <a href="register-claim.html" class="nav-item">
+                    <span class="material-icons nav-icon">add_alert</span>
+                    Регистрация случая
+                </a>
+                <a href="claims-status.html" class="nav-item">
+                    <span class="material-icons nav-icon">track_changes</span>
+                    Статус случаев
+                </a>
+                <a href="payouts.html" class="nav-item">
+                    <span class="material-icons nav-icon">payments</span>
+                    Процесс выплат
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Отчетность</div>
+                <a href="reports.html" class="nav-item">
+                    <span class="material-icons nav-icon">assessment</span>
+                    Формирование отчетов
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <span class="material-icons nav-icon">analytics</span>
+                    Аналитика портфеля
+                </a>
+                <a href="export.html" class="nav-item">
+                    <span class="material-icons nav-icon">download</span>
+                    Экспорт документов
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Система</div>
+                <a href="profile.html" class="nav-item">
+                    <span class="material-icons nav-icon">person</span>
+                    Профиль
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <span class="material-icons nav-icon">settings</span>
+                    Настройки
+                </a>
+                <a href="login-index.html" class="nav-item">
+                    <span class="material-icons nav-icon">logout</span>
+                    Выход
+                </a>
+            </div>
+        </nav>
+
+        <!-- Основная область -->
+        <main class="main-content">
+            <!-- Приветственная секция -->
+            <section class="welcome-section">
+                <h1 class="welcome-title">Добро пожаловать, Иван!</h1>
+                <p class="welcome-subtitle">Здесь вы можете управлять вашими страховыми полисами, отслеживать выплаты и формировать отчеты</p>
+                
+                <!-- Карточки статистики -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="material-icons stat-icon">folder</span>
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Активных полисов</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="material-icons stat-icon">payments</span>
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Текущих выплат</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="material-icons stat-icon">security</span>
+                        <div class="stat-value">₽1,240,000</div>
+                        <div class="stat-label">Общая сумма страхования</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Быстрые действия -->
+            <section class="quick-actions">
+                <h2 class="section-title">Быстрые действия</h2>
+                <div class="actions-grid">
+                    <a href="insurance-contracts.html" class="action-card">
+                        <span class="material-icons action-icon">add</span>
+                        <div class="action-title">Добавить договор</div>
+                        <div class="action-description">Оформить новый страховой полис</div>
+                    </a>
+                    <a href="register-claim.html" class="action-card">
+                        <span class="material-icons action-icon">add_alert</span>
+                        <div class="action-title">Зарегистрировать случай</div>
+                        <div class="action-description">Сообщить о страховом случае</div>
+                    </a>
+                    <a href="reports.html" class="action-card">
+                        <span class="material-icons action-icon">assessment</span>
+                        <div class="action-title">Сформировать отчет</div>
+                        <div class="action-description">Создать отчет по полисам и выплатам</div>
+                    </a>
+                    <a href="analytics.html" class="action-card">
+                        <span class="material-icons action-icon">analytics</span>
+                        <div class="action-title">Аналитика портфеля</div>
+                        <div class="action-description">Просмотр статистики и KPI</div>
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Простая логика для активного пункта меню
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.pathname.split('/').pop();
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

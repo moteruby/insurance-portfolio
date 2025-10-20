@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsureFlow - Добавление клиента</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 70px;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo-icon {
+            color: #1976d2;
+            font-size: 32px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1976d2;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: #1a237e;
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: #546e7a;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid #e0e0e0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #757575;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logout-btn:hover {
+            background: #f5f5f5;
+            color: #d32f2f;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            padding: 0 1.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #546e7a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 1.5rem;
+            text-decoration: none;
+            color: #37474f;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #f3f7ff;
+            color: #1976d2;
+        }
+
+        .nav-item.active {
+            background: #f3f7ff;
+            color: #1976d2;
+            border-left-color: #1976d2;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .main-content {
+            min-height: 600px;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-subtitle {
+            color: #546e7a;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #546e7a;
+        }
+
+        .breadcrumb a {
+            color: #1976d2;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* Форма добавления клиента */
+        .client-form-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .form-tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 2rem;
+        }
+
+        .form-tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #546e7a;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .form-tab.active {
+            color: #1976d2;
+            border-bottom-color: #1976d2;
+            font-weight: 500;
+        }
+
+        .form-tab:hover:not(.active) {
+            color: #1976d2;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a237e;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #37474f;
+        }
+
+        .form-label.required::after {
+            content: " *";
+            color: #f44336;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-hint {
+            font-size: 0.8rem;
+            color: #90a4ae;
+            margin-top: 0.25rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .checkbox-label {
+            font-size: 0.9rem;
+            color: #37474f;
+        }
+
+        /* Документы */
+        .documents-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .document-upload {
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .document-upload:hover {
+            border-color: #1976d2;
+            background: #f3f7ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #bdbdbd;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            color: #546e7a;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-hint {
+            font-size: 0.8rem;
+            color: #90a4ae;
+        }
+
+        /* Действия формы */
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 2rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn-outline {
+            background: white;
+            color: #1976d2;
+            border: 1px solid #1976d2;
+        }
+
+        .btn-outline:hover {
+            background: #f5f9ff;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #37474f;
+            border: 1px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #eeeeee;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Валидация */
+        .form-input.error {
+            border-color: #f44336;
+        }
+
+        .error-message {
+            color: #f44336;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        .success-message {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            color: #2e7d32;
+            display: none;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-actions {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .action-buttons {
+                justify-content: space-between;
+            }
+            
+            .form-tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="employee-dashboard.html" class="logo">
+                <span class="material-icons logo-icon">business_center</span>
+                <span class="logo-text">InsureFlow</span>
+            </a>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <div class="user-name">Петров Алексей Сергеевич</div>
+                    <div class="user-role">Страховой агент</div>
+                </div>
+                <button class="logout-btn" onclick="location.href='login.html'">
+                    <span class="material-icons">logout</span>
+                    Выход
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-title">Рабочий стол</div>
+                <a href="employee-dashboard.html" class="nav-item">
+                    <span class="material-icons nav-icon">dashboard</span>
+                    Мой рабочий стол
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Клиенты</div>
+                <a href="my-clients.html" class="nav-item">
+                    <span class="material-icons nav-icon">people</span>
+                    Мои клиенты
+                </a>
+                <a href="add-client.html" class="nav-item active">
+                    <span class="material-icons nav-icon">person_add</span>
+                    Добавить клиента
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Договоры</div>
+                <a href="my-contracts.html" class="nav-item">
+                    <span class="material-icons nav-icon">description</span>
+                    Мои договоры
+                </a>
+                <a href="new-contract.html" class="nav-item">
+                    <span class="material-icons nav-icon">add_circle</span>
+                    Новый договор
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Страховые случаи</div>
+                <a href="insurance-cases.html" class="nav-item">
+                    <span class="material-icons nav-icon">warning</span>
+                    Мои случаи
+                </a>
+                <a href="new-case.html" class="nav-item">
+                    <span class="material-icons nav-icon">add_alert</span>
+                    Новый случай
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Отчетность</div>
+                <a href="my-reports.html" class="nav-item">
+                    <span class="material-icons nav-icon">assessment</span>
+                    Моя отчетность
+                </a>
+                <a href="kpi.html" class="nav-item">
+                    <span class="material-icons nav-icon">trending_up</span>
+                    Показатели KPI
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Коммуникации</div>
+                <a href="communications.html" class="nav-item">
+                    <span class="material-icons nav-icon">notifications</span>
+                    Уведомления
+                </a>
+                <a href="messages.html" class="nav-item">
+                    <span class="material-icons nav-icon">message</span>
+                    Сообщения
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="page-header">
+                <div class="breadcrumb">
+                    <a href="employee-dashboard.html">Главная</a>
+                    <span class="material-icons" style="font-size: 16px;">chevron_right</span>
+                    <a href="my-clients.html">Мои клиенты</a>
+                    <span class="material-icons" style="font-size: 16px;">chevron_right</span>
+                    <span>Добавление клиента</span>
+                </div>
+                <h1 class="page-title">
+                    <span class="material-icons">person_add</span>
+                    Добавление нового клиента
+                </h1>
+                <p class="page-subtitle">Заполните информацию о новом клиенте для добавления в вашу базу</p>
+            </div>
+
+            <!-- Сообщение об успехе -->
+            <div class="success-message" id="successMessage">
+                <span class="material-icons" style="float: left; margin-right: 8px;">check_circle</span>
+                Клиент успешно добавлен! <a href="my-clients.html" style="color: #1976d2; margin-left: 8px;">Перейти к списку клиентов</a>
+            </div>
+
+            <!-- Форма добавления клиента -->
+            <div class="client-form-container">
+                <div class="form-tabs">
+                    <button class="form-tab active" onclick="openFormTab('personal')">Основная информация</button>
+                    <button class="form-tab" onclick="openFormTab('contacts')">Контактные данные</button>
+                    <button class="form-tab" onclick="openFormTab('documents')">Документы</button>
+                    <button class="form-tab" onclick="openFormTab('additional')">Дополнительно</button>
+                </div>
+
+                <form id="clientForm" onsubmit="return validateForm()">
+                    <!-- Вкладка основной информации -->
+                    <div id="personal-tab" class="form-content active">
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <span class="material-icons">person</span>
+                                Персональные данные
+                            </h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label required">Фамилия</label>
+                                    <input type="text" class="form-input" id="lastName" name="lastName" placeholder="Введите фамилию">
+                                    <div class="error-message" id="lastNameError"></div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required">Имя</label>
+                                    <input type="text" class="form-input" id="firstName" name="firstName" placeholder="Введите имя">
+                                    <div class="error-message" id="firstNameError"></div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Отчество</label>
+                                    <input type="text" class="form-input" id="middleName" name="middleName" placeholder="Введите отчество">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label required">Дата рождения</label>
+                                    <input type="date" class="form-input" id="birthDate" name="birthDate">
+                                    <div class="error-message" id="birthDateError"></div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required">Пол</label>
+                                    <select class="form-select" id="gender" name="gender">
+                                        <option value="">Выберите пол</option>
+                                        <option value="male">Мужской</option>
+                                        <option value="female">Женский</option>
+                                    </select>
+                                    <div class="error-message" id="genderError"></div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Место рождения</label>
+                                    <input type="text" class="form-input" id="birthPlace" name="birthPlace" placeholder="Город, страна">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Вкладка контактных данных -->
+                    <div id="contacts-tab" class="form-content">
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <span class="material-icons">contact_phone</span>
+                                Контактная информация
+                            </h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label required">Телефон</label>
+                                    <input type="tel" class="form-input" id="phone" name="phone" placeholder="+7 (___) ___-__-__">
+                                    <div class="error-message" id="phoneError"></div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required">Email</label>
+                                    <input type="email" class="form-input" id="email" name="email" placeholder="email@example.com">
+                                    <div class="error-message" id="emailError"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Адрес проживания</label>
+                                    <input type="text" class="form-input" id="address" name="address" placeholder="Город, улица, дом, квартира">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Вкладка документов -->
+                    <div id="documents-tab" class="form-content">
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <span class="material-icons">badge</span>
+                                Документы
+                            </h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label required">Тип документа</label>
+                                    <select class="form-select" id="documentType" name="documentType">
+                                        <option value="">Выберите тип документа</option>
+                                        <option value="passport">Паспорт РФ</option>
+                                        <option value="international">Загранпаспорт</option>
+                                        <option value="driver_license">Водительское удостоверение</option>
+                                    </select>
+                                    <div class="error-message" id="documentTypeError"></div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required">Серия и номер</label>
+                                    <input type="text" class="form-input" id="documentNumber" name="documentNumber" placeholder="Серия и номер документа">
+                                    <div class="error-message" id="documentNumberError"></div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required">Кем выдан</label>
+                                    <input type="text" class="form-input" id="documentIssuedBy" name="documentIssuedBy" placeholder="Орган, выдавший документ">
+                                    <div class="error-message" id="documentIssuedByError"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label required">Дата выдачи</label>
+                                    <input type="date" class="form-input" id="documentIssueDate" name="documentIssueDate">
+                                    <div class="error-message" id="documentIssueDateError"></div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Код подразделения</label>
+                                    <input type="text" class="form-input" id="documentDivisionCode" name="documentDivisionCode" placeholder="000-000">
+                                </div>
+                            </div>
+
+                            <div class="documents-section">
+                                <h4 class="section-title">
+                                    <span class="material-icons">attach_file</span>
+                                    Загрузка документов
+                                </h4>
+                                <div class="document-upload" onclick="document.getElementById('fileUpload').click()">
+                                    <div class="upload-icon">
+                                        <span class="material-icons">cloud_upload</span>
+                                    </div>
+                                    <div class="upload-text">Нажмите для загрузки сканов документов</div>
+                                    <div class="upload-hint">Поддерживаемые форматы: PDF, JPG, PNG (макс. 10MB)</div>
+                                </div>
+                                <input type="file" id="fileUpload" multiple style="display: none;" onchange="handleFileUpload(this.files)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Вкладка дополнительной информации -->
+                    <div id="additional-tab" class="form-content">
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <span class="material-icons">info</span>
+                                Дополнительная информация
+                            </h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Источник клиента</label>
+                                    <select class="form-select" id="clientSource" name="clientSource">
+                                        <option value="">Выберите источник</option>
+                                        <option value="recommendation">Рекомендация</option>
+                                        <option value="cold_call">Холодный звонок</option>
+                                        <option value="website">Сайт компании</option>
+                                        <option value="social_media">Социальные сети</option>
+                                        <option value="event">Мероприятие</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Категория клиента</label>
+                                    <select class="form-select" id="clientCategory" name="clientCategory">
+                                        <option value="standard">Стандартный</option>
+                                        <option value="vip">VIP клиент</option>
+                                        <option value="corporate">Корпоративный</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Примечания</label>
+                                <textarea class="form-textarea" id="notes" name="notes" placeholder="Дополнительная информация о клиенте..."></textarea>
+                            </div>
+
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="marketingConsent" name="marketingConsent">
+                                <label for="marketingConsent" class="checkbox-label">Клиент согласен на получение информационных материалов</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Действия формы -->
+                    <div class="form-actions">
+                        <a href="my-clients.html" class="btn btn-secondary">
+                            <span class="material-icons">arrow_back</span>
+                            Назад к списку
+                        </a>
+                        
+                        <div class="action-buttons">
+                            <button type="button" class="btn btn-outline" onclick="resetForm()">
+                                <span class="material-icons">refresh</span>
+                                Очистить форму
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <span class="material-icons">save</span>
+                                Сохранить клиента
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Переключение вкладок формы
+        function openFormTab(tabName) {
+            // Скрыть все вкладки контента
+            document.querySelectorAll('.form-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Убрать активный класс со всех кнопок вкладок
+            document.querySelectorAll('.form-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Показать выбранную вкладку
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Добавить активный класс выбранной кнопке
+            event.target.classList.add('active');
+        }
+
+        // Валидация формы
+        function validateForm() {
+            let isValid = true;
+            
+            // Очистка предыдущих ошибок
+            document.querySelectorAll('.error-message').forEach(error => {
+                error.textContent = '';
+            });
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.classList.remove('error');
+            });
+
+            // Проверка обязательных полей
+            const requiredFields = [
+                { id: 'lastName', message: 'Пожалуйста, введите фамилию' },
+                { id: 'firstName', message: 'Пожалуйста, введите имя' },
+                { id: 'birthDate', message: 'Пожалуйста, укажите дату рождения' },
+                { id: 'gender', message: 'Пожалуйста, выберите пол' },
+                { id: 'phone', message: 'Пожалуйста, введите телефон' },
+                { id: 'email', message: 'Пожалуйста, введите email' },
+                { id: 'documentType', message: 'Пожалуйста, выберите тип документа' },
+                { id: 'documentNumber', message: 'Пожалуйста, введите серию и номер документа' },
+                { id: 'documentIssuedBy', message: 'Пожалуйста, укажите кем выдан документ' },
+                { id: 'documentIssueDate', message: 'Пожалуйста, укажите дату выдачи документа' }
+            ];
+
+            requiredFields.forEach(field => {
+                const element = document.getElementById(field.id);
+                if (!element.value.trim()) {
+                    element.classList.add('error');
+                    document.getElementById(field.id + 'Error').textContent = field.message;
+                    isValid = false;
+                }
+            });
+
+            // Дополнительная валидация email
+            const email = document.getElementById('email').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && !emailRegex.test(email)) {
+                document.getElementById('email').classList.add('error');
+                document.getElementById('emailError').textContent = 'Пожалуйста, введите корректный email';
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Имитация успешного сохранения
+                document.getElementById('successMessage').style.display = 'block';
+                setTimeout(() => {
+                    window.location.href = 'my-clients.html';
+                }, 2000);
+            }
+
+            return false; // Предотвращаем реальную отправку формы для демонстрации
+        }
+
+        // Сброс формы
+        function resetForm() {
+            if (confirm('Вы уверены, что хотите очистить все поля формы?')) {
+                document.getElementById('clientForm').reset();
+                document.querySelectorAll('.error-message').forEach(error => {
+                    error.textContent = '';
+                });
+                document.querySelectorAll('.form-input').forEach(input => {
+                    input.classList.remove('error');
+                });
+                document.getElementById('successMessage').style.display = 'none';
+            }
+        }
+
+        // Обработка загрузки файлов
+        function handleFileUpload(files) {
+            if (files.length > 0) {
+                alert(`Загружено ${files.length} файл(ов)`);
+                // Здесь будет логика обработки загруженных файлов
+            }
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Страница добавления клиента загружена');
+            
+            // Маска для телефона
+            const phoneInput = document.getElementById('phone');
+            phoneInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 0) {
+                    value = '+7 (' + value;
+                    if (value.length > 7) value = value.slice(0, 7) + ') ' + value.slice(7);
+                    if (value.length > 12) value = value.slice(0, 12) + '-' + value.slice(12);
+                    if (value.length > 15) value = value.slice(0, 15) + '-' + value.slice(15, 17);
+                }
+                e.target.value = value;
+            });
+        });
+    </script>
+</body>
+</html>

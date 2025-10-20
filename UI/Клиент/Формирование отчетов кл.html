@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsureFlow - Формирование отчетов</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 70px;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo-icon {
+            color: #1976d2;
+            font-size: 32px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1976d2;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: #1a237e;
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: #546e7a;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid #e0e0e0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #757575;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #f5f5f5;
+            color: #d32f2f;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            padding: 0 1.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #546e7a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 1.5rem;
+            text-decoration: none;
+            color: #37474f;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #f3f7ff;
+            color: #1976d2;
+        }
+
+        .nav-item.active {
+            background: #f3f7ff;
+            color: #1976d2;
+            border-left-color: #1976d2;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .main-content {
+            min-height: 600px;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-subtitle {
+            color: #546e7a;
+        }
+
+        /* Шаблоны отчетов */
+        .report-templates {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .template-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .template-card:hover {
+            border-color: #1976d2;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .template-card.active {
+            border-color: #1976d2;
+            background: #f3f7ff;
+        }
+
+        .template-icon {
+            font-size: 2.5rem;
+            color: #1976d2;
+            margin-bottom: 1rem;
+        }
+
+        .template-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a237e;
+            margin-bottom: 0.5rem;
+        }
+
+        .template-description {
+            color: #546e7a;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+
+        .template-features {
+            list-style: none;
+            margin-bottom: 1rem;
+        }
+
+        .template-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #546e7a;
+            margin-bottom: 0.25rem;
+        }
+
+        .template-features li::before {
+            content: '•';
+            color: #1976d2;
+            font-weight: bold;
+        }
+
+        /* Форма настройки отчета */
+        .report-configuration {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .config-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .config-section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #37474f;
+            margin-bottom: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #37474f;
+        }
+
+        .form-input, .form-select {
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .checkbox-label {
+            font-size: 0.9rem;
+            color: #37474f;
+        }
+
+        /* Предпросмотр отчета */
+        .report-preview {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .preview-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn-outline {
+            background: white;
+            color: #1976d2;
+            border: 1px solid #1976d2;
+        }
+
+        .btn-outline:hover {
+            background: #f5f9ff;
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .preview-content {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            min-height: 200px;
+            border: 1px dashed #e0e0e0;
+        }
+
+        .preview-placeholder {
+            text-align: center;
+            color: #546e7a;
+            padding: 3rem;
+        }
+
+        .preview-placeholder .material-icons {
+            font-size: 3rem;
+            color: #bdbdbd;
+            margin-bottom: 1rem;
+        }
+
+        /* История отчетов */
+        .reports-history {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .history-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #37474f;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .history-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .history-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .report-name {
+            font-weight: 600;
+            color: #1976d2;
+        }
+
+        .report-type {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .report-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-completed {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-processing {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .status-failed {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #1976d2;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .action-btn:hover {
+            background: #f3f7ff;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .report-templates {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .preview-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .preview-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .history-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="client-dashboard.html" class="logo">
+                <span class="material-icons logo-icon">shield_check</span>
+                <span class="logo-text">InsureFlow</span>
+            </a>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <div class="user-name">Иванов Иван Иванович</div>
+                    <div class="user-role">Клиент</div>
+                </div>
+                <button class="logout-btn" onclick="location.href='login-index.html'">
+                    <span class="material-icons">logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-title">Основное</div>
+                <a href="client-dashboard.html" class="nav-item">
+                    <span class="material-icons nav-icon">dashboard</span>
+                    Главная панель
+                </a>
+                <a href="insurance-portfolio.html" class="nav-item">
+                    <span class="material-icons nav-icon">folder</span>
+                    Страховой портфель
+                </a>
+                <a href="insurance-contracts.html" class="nav-item">
+                    <span class="material-icons nav-icon">description</span>
+                    Договоры страхования
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Страховые случаи</div>
+                <a href="register-claim.html" class="nav-item">
+                    <span class="material-icons nav-icon">add_alert</span>
+                    Регистрация случая
+                </a>
+                <a href="claims-status.html" class="nav-item">
+                    <span class="material-icons nav-icon">track_changes</span>
+                    Статус случаев
+                </a>
+                <a href="payouts.html" class="nav-item">
+                    <span class="material-icons nav-icon">payments</span>
+                    Процесс выплат
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Отчетность</div>
+                <a href="reports.html" class="nav-item active">
+                    <span class="material-icons nav-icon">assessment</span>
+                    Формирование отчетов
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <span class="material-icons nav-icon">analytics</span>
+                    Аналитика портфеля
+                </a>
+                <a href="export.html" class="nav-item">
+                    <span class="material-icons nav-icon">download</span>
+                    Экспорт документов
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span class="material-icons">assessment</span>
+                    Формирование отчетов
+                </h1>
+                <p class="page-subtitle">Создавайте детальные отчеты по вашему страховому портфелю и операциям</p>
+            </div>
+
+            <!-- Шаблоны отчетов -->
+            <div class="report-templates">
+                <div class="template-card active" onclick="selectTemplate('premium')">
+                    <div class="template-icon">
+                        <span class="material-icons">trending_up</span>
+                    </div>
+                    <h3 class="template-title">Отчет по страховым премиям</h3>
+                    <p class="template-description">
+                        Детальный анализ уплаченных страховых премий по всем полисам за выбранный период
+                    </p>
+                    <ul class="template-features">
+                        <li>Сводка по типам страхования</li>
+                        <li>Динамика платежей</li>
+                        <li>Сравнение с предыдущими периодами</li>
+                        <li>Графики и диаграммы</li>
+                    </ul>
+                </div>
+
+                <div class="template-card" onclick="selectTemplate('payouts')">
+                    <div class="template-icon">
+                        <span class="material-icons">payments</span>
+                    </div>
+                    <h3 class="template-title">Отчет по выплатам</h3>
+                    <p class="template-description">
+                        Полная информация о страховых выплатах, их статусах и распределении по типам случаев
+                    </p>
+                    <ul class="template-features">
+                        <li>Статистика выплат по типам</li>
+                        <li>Сроки обработки заявок</li>
+                        <li>Анализ причин отказов</li>
+                        <li>Эффективность выплат</li>
+                    </ul>
+                </div>
+
+                <div class="template-card" onclick="selectTemplate('losses')">
+                    <div class="template-icon">
+                        <span class="material-icons">show_chart</span>
+                    </div>
+                    <h3 class="template-title">Отчет по убыткам</h3>
+                    <p class="template-description">
+                        Анализ страховых убытков, их структуры и факторов влияния на финансовые показатели
+                    </p>
+                    <ul class="template-features">
+                        <li>Распределение убытков по рискам</li>
+                        <li>Сезонность страховых случаев</li>
+                        <li>Сравнительный анализ</li>
+                        <li>Прогнозные показатели</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Настройка отчета -->
+            <div class="report-configuration">
+                <h3 class="config-title">
+                    <span class="material-icons">settings</span>
+                    Настройка параметров отчета
+                </h3>
+
+                <div class="config-section">
+                    <h4 class="section-title">Период отчетности</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Начальная дата</label>
+                            <input type="date" class="form-input" id="start-date">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Конечная дата</label>
+                            <input type="date" class="form-input" id="end-date">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Период</label>
+                            <select class="form-select" onchange="setPeriod(this.value)">
+                                <option value="">Выберите период</option>
+                                <option value="month">Текущий месяц</option>
+                                <option value="quarter">Текущий квартал</option>
+                                <option value="year">Текущий год</option>
+                                <option value="last-month">Прошлый месяц</option>
+                                <option value="last-year">Прошлый год</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <h4 class="section-title">Фильтры и группировка</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Тип страхования</label>
+                            <select class="form-select" id="insurance-type">
+                                <option value="all">Все типы</option>
+                                <option value="auto">Автострахование</option>
+                                <option value="property">Недвижимость</option>
+                                <option value="health">Здоровье</option>
+                                <option value="travel">Путешествия</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Статус полисов</label>
+                            <select class="form-select" id="policy-status">
+                                <option value="all">Все статусы</option>
+                                <option value="active">Активные</option>
+                                <option value="expired">Истекшие</option>
+                                <option value="pending">На рассмотрении</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Группировка данных</label>
+                            <select class="form-select" id="group-by">
+                                <option value="month">По месяцам</option>
+                                <option value="quarter">По кварталам</option>
+                                <option value="year">По годам</option>
+                                <option value="type">По типам страхования</option>
+                                <option value="status">По статусам</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <h4 class="section-title">Дополнительные параметры</h4>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="include-charts" checked>
+                        <label for="include-charts" class="checkbox-label">Включать графики и диаграммы</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="include-details" checked>
+                        <label for="include-details" class="checkbox-label">Включать детализированные таблицы</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="compare-periods">
+                        <label for="compare-periods" class="checkbox-label">Сравнение с предыдущим периодом</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="export-excel">
+                        <label for="export-excel" class="checkbox-label">Подготовить данные для Excel</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Предпросмотр отчета -->
+            <div class="report-preview">
+                <div class="preview-header">
+                    <h3 class="preview-title">Предпросмотр отчета</h3>
+                    <div class="preview-actions">
+                        <button class="btn btn-outline" onclick="updatePreview()">
+                            <span class="material-icons">refresh</span>
+                            Обновить предпросмотр
+                        </button>
+                        <button class="btn btn-primary" onclick="generateReport()">
+                            <span class="material-icons">description</span>
+                            Сформировать отчет
+                        </button>
+                        <button class="btn btn-success" onclick="exportReport()">
+                            <span class="material-icons">download</span>
+                            Экспорт в PDF
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="preview-content">
+                    <div class="preview-placeholder" id="preview-placeholder">
+                        <span class="material-icons">assessment</span>
+                        <p>Выберите параметры отчета и нажмите "Обновить предпросмотр"</p>
+                    </div>
+                    <div id="report-preview" style="display: none;">
+                        <!-- Сгенерированный контент отчета будет здесь -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- История отчетов -->
+            <div class="reports-history">
+                <div class="history-header">
+                    <h3 class="history-title">История сформированных отчетов</h3>
+                    <button class="btn btn-outline">
+                        <span class="material-icons">history</span>
+                        Показать все
+                    </button>
+                </div>
+                
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Название отчета</th>
+                            <th>Тип</th>
+                            <th>Период</th>
+                            <th>Дата создания</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="report-name">Отчет по премиям за март 2024</div>
+                            </td>
+                            <td>
+                                <span class="report-type">Премии</span>
+                            </td>
+                            <td>01.03.2024 - 31.03.2024</td>
+                            <td>01.04.2024 14:30</td>
+                            <td>
+                                <span class="report-status status-completed">Завершен</span>
+                            </td>
+                            <td>
+                                <button class="action-btn">
+                                    <span class="material-icons">visibility</span>
+                                    Просмотр
+                                </button>
+                                <button class="action-btn">
+                                    <span class="material-icons">download</span>
+                                    Скачать
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="report-name">Анализ выплат за 1 квартал 2024</div>
+                            </td>
+                            <td>
+                                <span class="report-type">Выплаты</span>
+                            </td>
+                            <td>01.01.2024 - 31.03.2024</td>
+                            <td>05.04.2024 10:15</td>
+                            <td>
+                                <span class="report-status status-completed">Завершен</span>
+                            </td>
+                            <td>
+                                <button class="action-btn">
+                                    <span class="material-icons">visibility</span>
+                                    Просмотр
+                                </button>
+                                <button class="action-btn">
+                                    <span class="material-icons">download</span>
+                                    Скачать
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="report-name">Отчет по убыткам за февраль 2024</div>
+                            </td>
+                            <td>
+                                <span class="report-type">Убытки</span>
+                            </td>
+                            <td>01.02.2024 - 29.02.2024</td>
+                            <td>01.03.2024 16:45</td>
+                            <td>
+                                <span class="report-status status-completed">Завершен</span>
+                            </td>
+                            <td>
+                                <button class="action-btn">
+                                    <span class="material-icons">visibility</span>
+                                    Просмотр
+                                </button>
+                                <button class="action-btn">
+                                    <span class="material-icons">download</span>
+                                    Скачать
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let selectedTemplate = 'premium';
+
+        function selectTemplate(template) {
+            selectedTemplate = template;
+            
+            // Убрать активный класс со всех карточек
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Добавить активный класс выбранной карточке
+            event.currentTarget.classList.add('active');
+            
+            // Обновить предпросмотр
+            updatePreview();
+        }
+
+        function setPeriod(period) {
+            const now = new Date();
+            let startDate, endDate;
+
+            switch(period) {
+                case 'month':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                    endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                    break;
+                case 'quarter':
+                    const quarter = Math.floor(now.getMonth() / 3);
+                    startDate = new Date(now.getFullYear(), quarter * 3, 1);
+                    endDate = new Date(now.getFullYear(), (quarter + 1) * 3, 0);
+                    break;
+                case 'year':
+                    startDate = new Date(now.getFullYear(), 0, 1);
+                    endDate = new Date(now.getFullYear(), 11, 31);
+                    break;
+                case 'last-month':
+                    startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                    endDate = new Date(now.getFullYear(), now.getMonth(), 0);
+                    break;
+                case 'last-year':
+                    startDate = new Date(now.getFullYear() - 1, 0, 1);
+                    endDate = new Date(now.getFullYear() - 1, 11, 31);
+                    break;
+                default:
+                    return;
+            }
+
+            document.getElementById('start-date').value = startDate.toISOString().split('T')[0];
+            document.getElementById('end-date').value = endDate.toISOString().split('T')[0];
+        }
+
+        function updatePreview() {
+            const placeholder = document.getElementById('preview-placeholder');
+            const preview = document.getElementById('report-preview');
+            
+            placeholder.style.display = 'none';
+            preview.style.display = 'block';
+            
+            // Здесь будет логика генерации предпросмотра
+            preview.innerHTML = `
+                <div style="padding: 1rem;">
+                    <h4 style="color: #1a237e; margin-bottom: 1rem;">Предпросмотр отчета: ${getTemplateName(selectedTemplate)}</h4>
+                    <div style="background: white; padding: 1rem; border-radius: 6px; border: 1px solid #e0e0e0;">
+                        <p><strong>Период:</strong> ${document.getElementById('start-date').value || 'Не указан'} - ${document.getElementById('end-date').value || 'Не указан'}</p>
+                        <p><strong>Тип страхования:</strong> ${document.getElementById('insurance-type').value}</p>
+                        <p><strong>Группировка:</strong> ${document.getElementById('group-by').value}</p>
+                        <p style="margin-top: 1rem; color: #546e7a; font-style: italic;">
+                            Здесь будет отображаться сгенерированный отчет с графиками и таблицами...
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getTemplateName(template) {
+            const names = {
+                'premium': 'Отчет по страховым премиям',
+                'payouts': 'Отчет по выплатам', 
+                'losses': 'Отчет по убыткам'
+            };
+            return names[template] || 'Неизвестный отчет';
+        }
+
+        function generateReport() {
+            alert('Отчет успешно сформирован! Проверьте раздел "История отчетов".');
+            // Здесь будет логика генерации полного отчета
+        }
+
+        function exportReport() {
+            alert('Отчет подготовлен для экспорта в PDF!');
+            // Здесь будет логика экспорта в PDF
+        }
+
+        // Инициализация дат
+        document.addEventListener('DOMContentLoaded', function() {
+            setPeriod('month');
+        });
+    </script>
+</body>
+</html>

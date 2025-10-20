@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsureFlow - Экспорт документов</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 70px;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo-icon {
+            color: #1976d2;
+            font-size: 32px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1976d2;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: #1a237e;
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: #546e7a;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid #e0e0e0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #757575;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #f5f5f5;
+            color: #d32f2f;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            padding: 0 1.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #546e7a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 1.5rem;
+            text-decoration: none;
+            color: #37474f;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #f3f7ff;
+            color: #1976d2;
+        }
+
+        .nav-item.active {
+            background: #f3f7ff;
+            color: #1976d2;
+            border-left-color: #1976d2;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .main-content {
+            min-height: 600px;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-subtitle {
+            color: #546e7a;
+        }
+
+        /* Быстрый экспорт */
+        .quick-export {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .export-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .export-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-color: #1976d2;
+        }
+
+        .export-icon {
+            font-size: 3rem;
+            color: #1976d2;
+            margin-bottom: 1rem;
+        }
+
+        .export-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a237e;
+            margin-bottom: 0.5rem;
+        }
+
+        .export-description {
+            color: #546e7a;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .export-formats {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .format-badge {
+            padding: 4px 8px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #546e7a;
+            font-weight: 500;
+        }
+
+        /* Настройка экспорта */
+        .export-configuration {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .config-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .config-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .config-tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 1.5rem;
+        }
+
+        .config-tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #546e7a;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .config-tab.active {
+            color: #1976d2;
+            border-bottom-color: #1976d2;
+            font-weight: 500;
+        }
+
+        .config-tab:hover:not(.active) {
+            color: #1976d2;
+        }
+
+        .config-content {
+            display: none;
+        }
+
+        .config-content.active {
+            display: block;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #37474f;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #37474f;
+        }
+
+        .form-input, .form-select {
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .checkbox-label {
+            font-size: 0.9rem;
+            color: #37474f;
+        }
+
+        /* Предпросмотр экспорта */
+        .export-preview {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .preview-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .btn-outline {
+            background: white;
+            color: #1976d2;
+            border: 1px solid #1976d2;
+        }
+
+        .btn-outline:hover {
+            background: #f5f9ff;
+        }
+
+        .preview-content {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            min-height: 200px;
+            border: 1px dashed #e0e0e0;
+        }
+
+        .preview-placeholder {
+            text-align: center;
+            color: #546e7a;
+            padding: 3rem;
+        }
+
+        .preview-placeholder .material-icons {
+            font-size: 3rem;
+            color: #bdbdbd;
+            margin-bottom: 1rem;
+        }
+
+        /* История экспорта */
+        .export-history {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .history-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #37474f;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .history-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .history-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .export-name {
+            font-weight: 600;
+            color: #1976d2;
+        }
+
+        .export-type {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .type-pdf {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .type-excel {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .type-csv {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .export-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-completed {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-processing {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .status-failed {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .file-size {
+            color: #546e7a;
+            font-size: 0.8rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #1976d2;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .action-btn:hover {
+            background: #f3f7ff;
+        }
+
+        /* Информация о файле */
+        .file-info {
+            background: #e3f2fd;
+            border: 1px solid #1976d2;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .file-info-title {
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .file-info-content {
+            color: #37474f;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-export {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .preview-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .preview-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .history-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="client-dashboard.html" class="logo">
+                <span class="material-icons logo-icon">shield_check</span>
+                <span class="logo-text">InsureFlow</span>
+            </a>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <div class="user-name">Иванов Иван Иванович</div>
+                    <div class="user-role">Клиент</div>
+                </div>
+                <button class="logout-btn" onclick="location.href='login-index.html'">
+                    <span class="material-icons">logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-title">Основное</div>
+                <a href="client-dashboard.html" class="nav-item">
+                    <span class="material-icons nav-icon">dashboard</span>
+                    Главная панель
+                </a>
+                <a href="insurance-portfolio.html" class="nav-item">
+                    <span class="material-icons nav-icon">folder</span>
+                    Страховой портфель
+                </a>
+                <a href="insurance-contracts.html" class="nav-item">
+                    <span class="material-icons nav-icon">description</span>
+                    Договоры страхования
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Страховые случаи</div>
+                <a href="register-claim.html" class="nav-item">
+                    <span class="material-icons nav-icon">add_alert</span>
+                    Регистрация случая
+                </a>
+                <a href="claims-status.html" class="nav-item">
+                    <span class="material-icons nav-icon">track_changes</span>
+                    Статус случаев
+                </a>
+                <a href="payouts.html" class="nav-item">
+                    <span class="material-icons nav-icon">payments</span>
+                    Процесс выплат
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Отчетность</div>
+                <a href="reports.html" class="nav-item">
+                    <span class="material-icons nav-icon">assessment</span>
+                    Формирование отчетов
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <span class="material-icons nav-icon">analytics</span>
+                    Аналитика портфеля
+                </a>
+                <a href="export.html" class="nav-item active">
+                    <span class="material-icons nav-icon">download</span>
+                    Экспорт документов
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span class="material-icons">download</span>
+                    Экспорт документов
+                </h1>
+                <p class="page-subtitle">Экспортируйте ваши страховые документы и отчеты в различных форматах</p>
+            </div>
+
+            <!-- Быстрый экспорт -->
+            <div class="quick-export">
+                <div class="export-card" onclick="selectExportType('contracts')">
+                    <div class="export-icon">
+                        <span class="material-icons">description</span>
+                    </div>
+                    <h3 class="export-title">Договоры страхования</h3>
+                    <p class="export-description">
+                        Экспорт всех страховых договоров и полисов с детальной информацией
+                    </p>
+                    <div class="export-formats">
+                        <span class="format-badge">PDF</span>
+                        <span class="format-badge">Excel</span>
+                        <span class="format-badge">CSV</span>
+                    </div>
+                </div>
+
+                <div class="export-card" onclick="selectExportType('payouts')">
+                    <div class="export-icon">
+                        <span class="material-icons">payments</span>
+                    </div>
+                    <h3 class="export-title">Выплаты и случаи</h3>
+                    <p class="export-description">
+                        Экспорт данных о страховых выплатах и зарегистрированных случаях
+                    </p>
+                    <div class="export-formats">
+                        <span class="format-badge">PDF</span>
+                        <span class="format-badge">Excel</span>
+                        <span class="format-badge">JSON</span>
+                    </div>
+                </div>
+
+                <div class="export-card" onclick="selectExportType('reports')">
+                    <div class="export-icon">
+                        <span class="material-icons">assessment</span>
+                    </div>
+                    <h3 class="export-title">Отчеты и аналитика</h3>
+                    <p class="export-description">
+                        Экспорт сформированных отчетов и аналитических данных
+                    </p>
+                    <div class="export-formats">
+                        <span class="format-badge">PDF</span>
+                        <span class="format-badge">Excel</span>
+                        <span class="format-badge">CSV</span>
+                    </div>
+                </div>
+
+                <div class="export-card" onclick="selectExportType('portfolio')">
+                    <div class="export-icon">
+                        <span class="material-icons">folder</span>
+                    </div>
+                    <h3 class="export-title">Полный портфель</h3>
+                    <p class="export-description">
+                        Полный экспорт всех данных страхового портфеля
+                    </p>
+                    <div class="export-formats">
+                        <span class="format-badge">Excel</span>
+                        <span class="format-badge">CSV</span>
+                        <span class="format-badge">JSON</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Настройка экспорта -->
+            <div class="export-configuration">
+                <div class="config-header">
+                    <h3 class="config-title">Настройка параметров экспорта</h3>
+                    <button class="btn btn-outline" onclick="resetConfiguration()">
+                        <span class="material-icons">refresh</span>
+                        Сбросить настройки
+                    </button>
+                </div>
+
+                <div class="config-tabs">
+                    <button class="config-tab active" onclick="openConfigTab('format')">Формат</button>
+                    <button class="config-tab" onclick="openConfigTab('filters')">Фильтры</button>
+                    <button class="config-tab" onclick="openConfigTab('structure')">Структура</button>
+                    <button class="config-tab" onclick="openConfigTab('delivery')">Доставка</button>
+                </div>
+
+                <!-- Вкладка формата -->
+                <div id="format-tab" class="config-content active">
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <span class="material-icons">description</span>
+                            Выбор формата экспорта
+                        </h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Основной формат</label>
+                                <select class="form-select" id="export-format">
+                                    <option value="pdf">PDF документ</option>
+                                    <option value="excel">Excel таблица</option>
+                                    <option value="csv">CSV файл</option>
+                                    <option value="json">JSON данные</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Качество документа</label>
+                                <select class="form-select" id="document-quality">
+                                    <option value="standard">Стандартное</option>
+                                    <option value="high">Высокое</option>
+                                    <option value="print">Для печати</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <span class="material-icons">settings</span>
+                            Дополнительные настройки
+                        </h4>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="include-charts" checked>
+                            <label for="include-charts" class="checkbox-label">Включать графики и диаграммы</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="include-summary" checked>
+                            <label for="include-summary" class="checkbox-label">Включать сводную информацию</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="password-protect">
+                            <label for="password-protect" class="checkbox-label">Защитить паролем (PDF)</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="watermark">
+                            <label for="watermark" class="checkbox-label">Добавить водяной знак</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Вкладка фильтров -->
+                <div id="filters-tab" class="config-content">
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <span class="material-icons">filter_list</span>
+                            Фильтрация данных
+                        </h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Период</label>
+                                <select class="form-select" id="export-period">
+                                    <option value="all">Все данные</option>
+                                    <option value="month">Текущий месяц</option>
+                                    <option value="quarter">Текущий квартал</option>
+                                    <option value="year">Текущий год</option>
+                                    <option value="custom">Произвольный период</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Тип страхования</label>
+                                <select class="form-select" id="insurance-type">
+                                    <option value="all">Все типы</option>
+                                    <option value="auto">Автострахование</option>
+                                    <option value="property">Недвижимость</option>
+                                    <option value="health">Здоровье</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Статус документов</label>
+                                <select class="form-select" id="document-status">
+                                    <option value="all">Все статусы</option>
+                                    <option value="active">Активные</option>
+                                    <option value="expired">Истекшие</option>
+                                    <option value="pending">На рассмотрении</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Минимальная сумма</label>
+                                <input type="number" class="form-input" id="min-amount" placeholder="₽">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Предпросмотр экспорта -->
+            <div class="export-preview">
+                <div class="preview-header">
+                    <h3 class="preview-title">Предпросмотр экспорта</h3>
+                    <div class="preview-actions">
+                        <button class="btn btn-outline" onclick="updatePreview()">
+                            <span class="material-icons">refresh</span>
+                            Обновить предпросмотр
+                        </button>
+                        <button class="btn btn-primary" onclick="startExport()">
+                            <span class="material-icons">file_download</span>
+                            Начать экспорт
+                        </button>
+                        <button class="btn btn-success" onclick="scheduleExport()">
+                            <span class="material-icons">schedule</span>
+                            Запланировать
+                        </button>
+                    </div>
+                </div>
+
+                <div class="file-info">
+                    <div class="file-info-title">
+                        <span class="material-icons">info</span>
+                        Информация о файле
+                    </div>
+                    <div class="file-info-content">
+                        <strong>Тип:</strong> <span id="file-type">Договоры страхования</span> • 
+                        <strong>Формат:</strong> <span id="file-format">PDF</span> • 
+                        <strong>Примерный размер:</strong> <span id="file-size">~2.4 MB</span> • 
+                        <strong>Записей:</strong> <span id="file-records">15 документов</span>
+                    </div>
+                </div>
+                
+                <div class="preview-content">
+                    <div class="preview-placeholder" id="preview-placeholder">
+                        <span class="material-icons">description</span>
+                        <p>Настройте параметры экспорта и нажмите "Обновить предпросмотр"</p>
+                    </div>
+                    <div id="export-preview" style="display: none;">
+                        <!-- Сгенерированный предпросмотр будет здесь -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- История экспорта -->
+            <div class="export-history">
+                <div class="history-header">
+                    <h3 class="history-title">История экспорта</h3>
+                    <button class="btn btn-outline">
+                        <span class="material-icons">history</span>
+                        Показать все
+                    </button>
+                </div>
+                
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Название файла</th>
+                            <th>Тип</th>
+                            <th>Формат</th>
+                            <th>Размер</th>
+                            <th>Дата создания</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="export-name">Договоры_страхования_2024.pdf</div>
+                                <div class="file-size">2.4 MB</div>
+                            </td>
+                            <td>
+                                <span class="export-type type-pdf">Договоры</span>
+                            </td>
+                            <td>PDF</td>
+                            <td>2.4 MB</td>
+                            <td>01.04.2024 14:30</td>
+                            <td>
+                                <span class="export-status status-completed">Завершен</span>
+                            </td>
+                            <td>
+                                <button class="action-btn">
+                                    <span class="material-icons">download</span>
+                                    Скачать
+                                </button>
+                                <button class="action-btn">
+                                    <span class="material-icons">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="export-name">Выплаты_март_2024.xlsx</div>
+                                <div class="file-size">1.8 MB</div>
+                            </td>
+                            <td>
+                                <span class="export-type type-excel">Выплаты</span>
+                            </td>
+                            <td>Excel</td>
+                            <td>1.8 MB</td>
+                            <td>28.03.2024 10:15</td>
+                            <td>
+                                <span class="export-status status-completed">Завершен</span>
+                            </td>
+                            <td>
+                                <button class="action-btn">
+                                    <span class="material-icons">download</span>
+                                    Скачать
+                                </button>
+                                <button class="action-btn">
+                                    <span class="material-icons">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="export-name">Полный_портфель.csv</div>
+                                <div class="file-size">3.2 MB</div>
+                            </td>
+                            <td>
+                                <span class="export-type type-csv">Портфель</span>
+                            </td>
+                            <td>CSV</td>
+                            <td>3.2 MB</td>
+                            <td>25.03.2024 16:45</td>
+                            <td>
+                                <span class="export-status status-completed">Завершен</span>
+                            </td>
+                            <td>
+                                <button class="action-btn">
+                                    <span class="material-icons">download</span>
+                                    Скачать
+                                </button>
+                                <button class="action-btn">
+                                    <span class="material-icons">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let selectedExportType = 'contracts';
+
+        function selectExportType(type) {
+            selectedExportType = type;
+            updateFileInfo();
+            updatePreview();
+        }
+
+        function openConfigTab(tabName) {
+            // Скрыть все вкладки
+            document.querySelectorAll('.config-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Убрать активный класс со всех кнопок вкладок
+            document.querySelectorAll('.config-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Показать выбранную вкладку
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Добавить активный класс выбранной кнопке
+            event.target.classList.add('active');
+        }
+
+        function updateFileInfo() {
+            const typeNames = {
+                'contracts': 'Договоры страхования',
+                'payouts': 'Выплаты и случаи',
+                'reports': 'Отчеты и аналитика',
+                'portfolio': 'Полный портфель'
+            };
+
+            const format = document.getElementById('export-format').value;
+            const formatNames = {
+                'pdf': 'PDF',
+                'excel': 'Excel',
+                'csv': 'CSV',
+                'json': 'JSON'
+            };
+
+            document.getElementById('file-type').textContent = typeNames[selectedExportType];
+            document.getElementById('file-format').textContent = formatNames[format];
+            document.getElementById('file-size').textContent = '~2.4 MB';
+            document.getElementById('file-records').textContent = '15 документов';
+        }
+
+        function updatePreview() {
+            const placeholder = document.getElementById('preview-placeholder');
+            const preview = document.getElementById('export-preview');
+            
+            placeholder.style.display = 'none';
+            preview.style.display = 'block';
+            
+            const format = document.getElementById('export-format').value;
+            const typeNames = {
+                'contracts': 'Договоры страхования',
+                'payouts': 'Выплаты и случаи',
+                'reports': 'Отчеты и аналитика',
+                'portfolio': 'Полный портфель'
+            };
+
+            preview.innerHTML = `
+                <div style="padding: 1rem;">
+                    <h4 style="color: #1a237e; margin-bottom: 1rem;">Предпросмотр экспорта: ${typeNames[selectedExportType]}</h4>
+                    <div style="background: white; padding: 1rem; border-radius: 6px; border: 1px solid #e0e0e0;">
+                        <p><strong>Формат:</strong> ${format.toUpperCase()}</p>
+                        <p><strong>Тип данных:</strong> ${typeNames[selectedExportType]}</p>
+                        <p><strong>Период:</strong> ${document.getElementById('export-period').value}</p>
+                        <p style="margin-top: 1rem; color: #546e7a; font-style: italic;">
+                            Здесь будет отображаться предпросмотр экспортируемых данных...
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function startExport() {
+            const format = document.getElementById('export-format').value;
+            alert(`Экспорт начат! Файл будет сохранен в формате ${format.toUpperCase()}`);
+            // Здесь будет логика начала экспорта
+        }
+
+        function scheduleExport() {
+            alert('Экспорт запланирован! Вы получите уведомление по готовности.');
+            // Здесь будет логика планирования экспорта
+        }
+
+        function resetConfiguration() {
+            document.getElementById('export-format').value = 'pdf';
+            document.getElementById('export-period').value = 'all';
+            document.getElementById('insurance-type').value = 'all';
+            updateFileInfo();
+            updatePreview();
+            alert('Настройки сброшены к значениям по умолчанию');
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            updateFileInfo();
+        });
+    </script>
+</body>
+</html>

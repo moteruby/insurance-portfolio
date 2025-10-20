@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsureFlow - Управление доступом</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 70px;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo-icon {
+            color: #1976d2;
+            font-size: 32px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1976d2;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: #1a237e;
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: #546e7a;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid #e0e0e0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #757575;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #f5f5f5;
+            color: #d32f2f;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            padding: 0 1.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #546e7a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 1.5rem;
+            text-decoration: none;
+            color: #37474f;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #f3f7ff;
+            color: #1976d2;
+        }
+
+        .nav-item.active {
+            background: #f3f7ff;
+            color: #1976d2;
+            border-left-color: #1976d2;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .main-content {
+            min-height: 600px;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-subtitle {
+            color: #546e7a;
+        }
+
+        /* Вкладки */
+        .access-tabs {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #546e7a;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab.active {
+            color: #1976d2;
+            border-bottom-color: #1976d2;
+            font-weight: 500;
+        }
+
+        .tab:hover:not(.active) {
+            color: #1976d2;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 2rem;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Панель действий */
+        .actions-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            max-width: 300px;
+        }
+
+        .search-input {
+            background: none;
+            border: none;
+            outline: none;
+            flex: 1;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .search-icon {
+            color: #546e7a;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .btn-outline {
+            background: white;
+            color: #1976d2;
+            border: 1px solid #1976d2;
+        }
+
+        .btn-outline:hover {
+            background: #f5f9ff;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        /* Таблицы */
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .access-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .access-table th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #37474f;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .access-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+
+        .access-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #1976d2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .user-email {
+            color: #546e7a;
+            font-size: 0.8rem;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .role-admin {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .role-manager {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .role-user {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .role-viewer {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .access-status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-inactive {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .last-login {
+            color: #546e7a;
+            font-size: 0.8rem;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #1976d2;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 4px;
+            transition: background 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            background: #f3f7ff;
+        }
+
+        .action-btn.delete {
+            color: #f44336;
+        }
+
+        .action-btn.delete:hover {
+            background: #ffebee;
+        }
+
+        /* Настройки доступа */
+        .permissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .permission-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .permission-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .permission-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .permission-toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .permission-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .permission-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .permission-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .permission-slider {
+            background-color: #1976d2;
+        }
+
+        input:checked + .permission-slider:before {
+            transform: translateX(26px);
+        }
+
+        .permission-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .permission-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .permission-name {
+            font-size: 0.9rem;
+            color: #37474f;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Журнал доступа */
+        .log-filters {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #37474f;
+        }
+
+        .form-input, .form-select {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+
+        .log-event {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .event-login {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .event-logout {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .event-access {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .event-security {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs-header {
+                flex-direction: column;
+            }
+            
+            .tab {
+                justify-content: center;
+            }
+            
+            .actions-panel {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .permissions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="admin-dashboard.html" class="logo">
+                <span class="material-icons logo-icon">business_center</span>
+                <span class="logo-text">InsureFlow</span>
+            </a>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <div class="user-name">Петров Алексей</div>
+                    <div class="user-role">Системный администратор</div>
+                </div>
+                <button class="logout-btn" onclick="location.href='login-index.html'">
+                    <span class="material-icons">logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-title">Главная</div>
+                <a href="admin-dashboard.html" class="nav-item">
+                    <span class="material-icons nav-icon">dashboard</span>
+                    Панель управления
+                </a>
+                <a href="admin-approvals.html" class="nav-item">
+                    <span class="material-icons nav-icon">approval</span>
+                    Одобрение договоров
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Управление пользователями</div>
+                <a href="admin-users.html" class="nav-item">
+                    <span class="material-icons nav-icon">people</span>
+                    Управление сотрудниками
+                </a>
+                <a href="admin-clients.html" class="nav-item">
+                    <span class="material-icons nav-icon">groups</span>
+                    Управление клиентами
+                </a>
+                <a href="admin-access.html" class="nav-item active">
+                    <span class="material-icons nav-icon">lock</span>
+                    Управление доступом
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Управление системой</div>
+                <a href="admin-roles.html" class="nav-item">
+                    <span class="material-icons nav-icon">admin_panel_settings</span>
+                    Управление ролями
+                </a>
+                <a href="admin-tariffs.html" class="nav-item">
+                    <span class="material-icons nav-icon">attach_money</span>
+                    Управление тарифами
+                </a>
+                <a href="admin-settings.html" class="nav-item">
+                    <span class="material-icons nav-icon">settings</span>
+                    Системные настройки
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Мониторинг</div>
+                <a href="admin-monitoring.html" class="nav-item">
+                    <span class="material-icons nav-icon">monitoring</span>
+                    Мониторинг системы
+                </a>
+                <a href="admin-analytics.html" class="nav-item">
+                    <span class="material-icons nav-icon">analytics</span>
+                    Аналитика системы
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span class="material-icons">lock</span>
+                    Управление доступом
+                </h1>
+                <p class="page-subtitle">Управление правами доступа пользователей и настройка политик безопасности</p>
+            </div>
+
+            <!-- Вкладки -->
+            <div class="access-tabs">
+                <div class="tabs-header">
+                    <button class="tab active" onclick="openTab('users')">
+                        <span class="material-icons">people</span>
+                        Пользователи
+                    </button>
+                    <button class="tab" onclick="openTab('permissions')">
+                        <span class="material-icons">admin_panel_settings</span>
+                        Настройки доступа
+                    </button>
+                    <button class="tab" onclick="openTab('logs')">
+                        <span class="material-icons">history</span>
+                        Журнал доступа
+                    </button>
+                </div>
+
+                <!-- Вкладка пользователей -->
+                <div id="users-tab" class="tab-content active">
+                    <div class="actions-panel">
+                        <h3 class="section-title">Управление доступом пользователей</h3>
+                        <div class="action-buttons">
+                            <button class="btn btn-outline">
+                                <span class="material-icons">file_download</span>
+                                Экспорт
+                            </button>
+                            <button class="btn btn-primary" onclick="showAccessModal()">
+                                <span class="material-icons">add</span>
+                                Назначить доступ
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="access-table">
+                            <thead>
+                                <tr>
+                                    <th>Пользователь</th>
+                                    <th>Роль</th>
+                                    <th>Статус доступа</th>
+                                    <th>Последний вход</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar">ИИ</div>
+                                            <div class="user-details">
+                                                <div class="user-name">Иванов Иван</div>
+                                                <div class="user-email">i.ivanov@insureflow.ru</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="role-badge role-manager">Менеджер</span>
+                                    </td>
+                                    <td>
+                                        <span class="access-status status-active">Активен</span>
+                                    </td>
+                                    <td>
+                                        <div class="last-login">01.04.2024 14:30</div>
+                                    </td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="action-btn" onclick="editUserAccess(1)">
+                                                <span class="material-icons">edit</span>
+                                            </button>
+                                            <button class="action-btn" onclick="toggleUserAccess(1)">
+                                                <span class="material-icons">lock</span>
+                                            </button>
+                                            <button class="action-btn delete" onclick="revokeUserAccess(1)">
+                                                <span class="material-icons">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar">ПА</div>
+                                            <div class="user-details">
+                                                <div class="user-name">Петрова Анна</div>
+                                                <div class="user-email">a.petrova@insureflow.ru</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="role-badge role-admin">Администратор</span>
+                                    </td>
+                                    <td>
+                                        <span class="access-status status-active">Активен</span>
+                                    </td>
+                                    <td>
+                                        <div class="last-login">01.04.2024 13:15</div>
+                                    </td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="action-btn" onclick="editUserAccess(2)">
+                                                <span class="material-icons">edit</span>
+                                            </button>
+                                            <button class="action-btn" onclick="toggleUserAccess(2)">
+                                                <span class="material-icons">lock</span>
+                                            </button>
+                                            <button class="action-btn delete" onclick="revokeUserAccess(2)">
+                                                <span class="material-icons">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar">СК</div>
+                                            <div class="user-details">
+                                                <div class="user-name">Сидоров Кирилл</div>
+                                                <div class="user-email">k.sidorov@insureflow.ru</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="role-badge role-user">Сотрудник</span>
+                                    </td>
+                                    <td>
+                                        <span class="access-status status-inactive">Заблокирован</span>
+                                    </td>
+                                    <td>
+                                        <div class="last-login">28.03.2024 10:45</div>
+                                    </td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="action-btn" onclick="editUserAccess(3)">
+                                                <span class="material-icons">edit</span>
+                                            </button>
+                                            <button class="action-btn" onclick="toggleUserAccess(3)">
+                                                <span class="material-icons">lock_open</span>
+                                            </button>
+                                            <button class="action-btn delete" onclick="revokeUserAccess(3)">
+                                                <span class="material-icons">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Вкладка настроек доступа -->
+                <div id="permissions-tab" class="tab-content">
+                    <div class="actions-panel">
+                        <h3 class="section-title">Настройки прав доступа</h3>
+                        <div class="action-buttons">
+                            <button class="btn btn-outline">
+                                <span class="material-icons">restore</span>
+                                Сбросить
+                            </button>
+                            <button class="btn btn-primary" onclick="savePermissions()">
+                                <span class="material-icons">save</span>
+                                Сохранить
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="permissions-grid">
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <h4 class="permission-title">Управление договорами</h4>
+                                <label class="permission-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="permission-slider"></span>
+                                </label>
+                            </div>
+                            <div class="permission-items">
+                                <div class="permission-item">
+                                    <span class="permission-name">Просмотр договоров</span>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="view-contracts" checked>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span class="permission-name">Создание договоров</span>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="create-contracts" checked>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span class="permission-name">Редактирование договоров</span>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="edit-contracts" checked>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span class="permission-name">Одобрение договоров</span>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="approve-contracts">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <h4 class="permission-title">Управление клиентами</h4>
+                                <label class="permission-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="permission-slider"></span>
+                                </label>
+                            </div>
+                            <div class="permission-items">
+                                <div class="permission-item">
+                                    <span class="permission-name">Просмотр клиентов</span>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="view-clients" checked>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span class="permission-name">Добавление клиентов</span>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="create-clients" checked>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span class="permission-name">Редактирование клиентов</span>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="edit-clients">
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span class="permission-name">Удаление клиентов</span>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="delete-clients">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <h4 class="permission-title">Отчетность и аналитика</h4>
+                                <label class="permission-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="permission-slider"></span>
+                                </label>
+                            </div>
+                            <div class="permission-items">
+                                <div class="permission-item">
+                                    <span class="permission-name">Просмотр отчетов</span>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="view-reports" checked>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span class="permission-name">Создание отчетов</span>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="create-reports">
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span class="permission-name">Экспорт данных</span>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="export-data">
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span class="permission-name">Аналитика системы</span>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="system-analytics">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <h4 class="permission-title">Администрирование</h4>
+                                <label class="permission-toggle">
+                                    <input type="checkbox">
+                                    <span class="permission-slider"></span>
+                                </label>
+                            </div>
+                            <div class="permission-items">
+                                <div class="permission-item">
+                                    <span class="permission-name">Управление пользователями</span>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="manage-users">
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span class="permission-name">Настройка системы</span>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="system-settings">
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span class="permission-name">Мониторинг системы</span>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="system-monitoring">
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span class="permission-name">Резервное копирование</span>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="backup-management">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Вкладка журнала доступа -->
+                <div id="logs-tab" class="tab-content">
+                    <div class="actions-panel">
+                        <h3 class="section-title">Журнал событий доступа</h3>
+                        <div class="action-buttons">
+                            <button class="btn btn-outline">
+                                <span class="material-icons">file_download</span>
+                                Экспорт логов
+                            </button>
+                            <button class="btn btn-danger">
+                                <span class="material-icons">delete</span>
+                                Очистить логи
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="log-filters">
+                        <div class="filter-row">
+                            <div class="form-group">
+                                <label class="form-label">Период</label>
+                                <select class="form-select">
+                                    <option>Последние 24 часа</option>
+                                    <option>Последние 7 дней</option>
+                                    <option selected>Последние 30 дней</option>
+                                    <option>Произвольный период</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Тип события</label>
+                                <select class="form-select">
+                                    <option>Все события</option>
+                                    <option>Вход в систему</option>
+                                    <option>Выход из системы</option>
+                                    <option>Попытки доступа</option>
+                                    <option>Изменения прав</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Пользователь</label>
+                                <select class="form-select">
+                                    <option>Все пользователи</option>
+                                    <option>Иванов Иван</option>
+                                    <option>Петрова Анна</option>
+                                    <option>Сидоров Кирилл</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">
+                            <span class="material-icons">search</span>
+                            Применить фильтры
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="access-table">
+                            <thead>
+                                <tr>
+                                    <th>Время</th>
+                                    <th>Пользователь</th>
+                                    <th>Событие</th>
+                                    <th>IP-адрес</th>
+                                    <th>Статус</th>
+                                    <th>Детали</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>01.04.2024 14:30:15</td>
+                                    <td>Иванов Иван</td>
+                                    <td>
+                                        <span class="log-event event-login">Вход в систему</span>
+                                    </td>
+                                    <td>192.168.1.100</td>
+                                    <td>
+                                        <span class="access-status status-active">Успешно</span>
+                                    </td>
+                                    <td>Успешная аутентификация</td>
+                                </tr>
+                                <tr>
+                                    <td>01.04.2024 13:15:22</td>
+                                    <td>Петрова Анна</td>
+                                    <td>
+                                        <span class="log-event event-access">Изменение прав</span>
+                                    </td>
+                                    <td>192.168.1.50</td>
+                                    <td>
+                                        <span class="access-status status-active">Успешно</span>
+                                    </td>
+                                    <td>Назначены права администратора пользователю Сидоров К.</td>
+                                </tr>
+                                <tr>
+                                    <td>01.04.2024 12:45:10</td>
+                                    <td>Неизвестный</td>
+                                    <td>
+                                        <span class="log-event event-security">Попытка доступа</span>
+                                    </td>
+                                    <td>95.165.34.128</td>
+                                    <td>
+                                        <span class="access-status status-inactive">Отклонено</span>
+                                    </td>
+                                    <td>Неудачная попытка входа с неверным паролем</td>
+                                </tr>
+                                <tr>
+                                    <td>31.03.2024 18:20:05</td>
+                                    <td>Сидоров Кирилл</td>
+                                    <td>
+                                        <span class="log-event event-logout">Выход из системы</span>
+                                    </td>
+                                    <td>192.168.1.75</td>
+                                    <td>
+                                        <span class="access-status status-active">Успешно</span>
+                                    </td>
+                                    <td>Корректное завершение сессии</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Модальное окно назначения доступа -->
+    <div id="accessModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Назначение прав доступа</h3>
+                <span class="close" onclick="closeAccessModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Пользователь</label>
+                    <select class="form-select" id="accessUser">
+                        <option value="">Выберите пользователя</option>
+                        <option value="1">Иванов Иван (i.ivanov@insureflow.ru)</option>
+                        <option value="2">Петрова Анна (a.petrova@insureflow.ru)</option>
+                        <option value="3">Сидоров Кирилл (k.sidorov@insureflow.ru)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Роль в системе</label>
+                    <select class="form-select" id="accessRole">
+                        <option value="user">Сотрудник</option>
+                        <option value="manager">Менеджер</option>
+                        <option value="admin">Администратор</option>
+                        <option value="viewer">Наблюдатель</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Срок действия доступа</label>
+                    <select class="form-select" id="accessDuration">
+                        <option value="permanent">Постоянный</option>
+                        <option value="1week">1 неделя</option>
+                        <option value="1month">1 месяц</option>
+                        <option value="3months">3 месяца</option>
+                        <option value="custom">Произвольный срок</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-outline" onclick="closeAccessModal()">Отмена</button>
+                    <button class="btn btn-primary" onclick="assignAccess()">Назначить доступ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(tabName) {
+            // Скрыть все вкладки
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Убрать активный класс со всех кнопок вкладок
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Показать выбранную вкладку
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Добавить активный класс выбранной кнопке
+            event.target.classList.add('active');
+        }
+
+        function showAccessModal() {
+            document.getElementById('accessModal').style.display = 'block';
+        }
+
+        function closeAccessModal() {
+            document.getElementById('accessModal').style.display = 'none';
+        }
+
+        function assignAccess() {
+            const user = document.getElementById('accessUser').value;
+            const role = document.getElementById('accessRole').value;
+            
+            if (!user) {
+                alert('Пожалуйста, выберите пользователя');
+                return;
+            }
+
+            alert(`Права доступа успешно назначены! Роль: ${role}`);
+            closeAccessModal();
+        }
+
+        function editUserAccess(userId) {
+            alert(`Редактирование прав доступа пользователя с ID: ${userId}`);
+        }
+
+        function toggleUserAccess(userId) {
+            if (confirm('Вы уверены, что хотите изменить статус доступа пользователя?')) {
+                alert(`Статус доступа пользователя с ID: ${userId} изменен`);
+            }
+        }
+
+        function revokeUserAccess(userId) {
+            if (confirm('Вы уверены, что хотите отозвать все права доступа пользователя?')) {
+                alert(`Права доступа пользователя с ID: ${userId} отозваны`);
+            }
+        }
+
+        function savePermissions() {
+            alert('Настройки прав доступа успешно сохранены!');
+        }
+
+        // Закрытие модального окна при клике вне его
+        window.onclick = function(event) {
+            const modal = document.getElementById('accessModal');
+            if (event.target === modal) {
+                closeAccessModal();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Страница управления доступом загружена');
+        });
+    </script>
+</body>
+</html>

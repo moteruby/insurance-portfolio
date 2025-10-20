@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsureFlow - Оформление договора</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 70px;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo-icon {
+            color: #1976d2;
+            font-size: 32px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1976d2;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: #1a237e;
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: #546e7a;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid #e0e0e0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #757575;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logout-btn:hover {
+            background: #f5f5f5;
+            color: #d32f2f;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            padding: 0 1.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #546e7a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 1.5rem;
+            text-decoration: none;
+            color: #37474f;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #f3f7ff;
+            color: #1976d2;
+        }
+
+        .nav-item.active {
+            background: #f3f7ff;
+            color: #1976d2;
+            border-left-color: #1976d2;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .main-content {
+            min-height: 600px;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-subtitle {
+            color: #546e7a;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #546e7a;
+        }
+
+        .breadcrumb a {
+            color: #1976d2;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* Основной контейнер формы */
+        .contract-form-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+
+        .form-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .summary-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        /* Шаги оформления */
+        .form-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .form-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #757575;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .step.active .step-circle {
+            background: #1976d2;
+            border-color: #1976d2;
+            color: white;
+        }
+
+        .step.completed .step-circle {
+            background: #4caf50;
+            border-color: #4caf50;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #546e7a;
+            text-align: center;
+        }
+
+        .step.active .step-label {
+            color: #1976d2;
+            font-weight: 600;
+        }
+
+        /* Секции формы */
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a237e;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #37474f;
+        }
+
+        .form-label.required::after {
+            content: " *";
+            color: #f44336;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-hint {
+            font-size: 0.8rem;
+            color: #90a4ae;
+            margin-top: 0.25rem;
+        }
+
+        /* Выбор клиента */
+        .client-selector {
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .client-selector:hover {
+            border-color: #1976d2;
+            background: #f3f7ff;
+        }
+
+        .selector-icon {
+            font-size: 2.5rem;
+            color: #bdbdbd;
+            margin-bottom: 1rem;
+        }
+
+        .selector-text {
+            color: #546e7a;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Выбранный клиент */
+        .selected-client {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .client-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .client-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #1976d2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .client-details {
+            flex: 1;
+        }
+
+        .client-name {
+            font-weight: 600;
+            color: #1a237e;
+            margin-bottom: 0.25rem;
+        }
+
+        .client-contacts {
+            font-size: 0.8rem;
+            color: #546e7a;
+        }
+
+        .change-client {
+            background: none;
+            border: none;
+            color: #1976d2;
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-decoration: underline;
+        }
+
+        /* Параметры страхования */
+        .insurance-params {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .param-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .param-row:last-child {
+            border-bottom: none;
+        }
+
+        .param-label {
+            color: #546e7a;
+            font-size: 0.9rem;
+        }
+
+        .param-value {
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        /* Панель итогов */
+        .summary-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .summary-label {
+            color: #546e7a;
+            font-size: 0.9rem;
+        }
+
+        .summary-value {
+            font-weight: 500;
+            color: #37474f;
+        }
+
+        .total-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a237e;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        /* Действия формы */
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 2rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn-outline {
+            background: white;
+            color: #1976d2;
+            border: 1px solid #1976d2;
+        }
+
+        .btn-outline:hover {
+            background: #f5f9ff;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #37474f;
+            border: 1px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #eeeeee;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Вспомогательные стили */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .checkbox-label {
+            font-size: 0.9rem;
+            color: #37474f;
+        }
+
+        .error-message {
+            color: #f44336;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        .success-message {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            color: #2e7d32;
+            display: none;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .contract-form-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-panel {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-steps {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .form-steps::before {
+                display: none;
+            }
+            
+            .step {
+                flex-direction: row;
+                gap: 1rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .action-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="employee-dashboard.html" class="logo">
+                <span class="material-icons logo-icon">business_center</span>
+                <span class="logo-text">InsureFlow</span>
+            </a>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <div class="user-name">Петров Алексей Сергеевич</div>
+                    <div class="user-role">Страховой агент</div>
+                </div>
+                <button class="logout-btn" onclick="location.href='login.html'">
+                    <span class="material-icons">logout</span>
+                    Выход
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-title">Рабочий стол</div>
+                <a href="employee-dashboard.html" class="nav-item">
+                    <span class="material-icons nav-icon">dashboard</span>
+                    Мой рабочий стол
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Клиенты</div>
+                <a href="my-clients.html" class="nav-item">
+                    <span class="material-icons nav-icon">people</span>
+                    Мои клиенты
+                </a>
+                <a href="add-client.html" class="nav-item">
+                    <span class="material-icons nav-icon">person_add</span>
+                    Добавить клиента
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Договоры</div>
+                <a href="my-contracts.html" class="nav-item">
+                    <span class="material-icons nav-icon">description</span>
+                    Мои договоры
+                </a>
+                <a href="new-contract.html" class="nav-item active">
+                    <span class="material-icons nav-icon">add_circle</span>
+                    Новый договор
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Страховые случаи</div>
+                <a href="insurance-cases.html" class="nav-item">
+                    <span class="material-icons nav-icon">warning</span>
+                    Мои случаи
+                </a>
+                <a href="new-case.html" class="nav-item">
+                    <span class="material-icons nav-icon">add_alert</span>
+                    Новый случай
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Отчетность</div>
+                <a href="my-reports.html" class="nav-item">
+                    <span class="material-icons nav-icon">assessment</span>
+                    Моя отчетность
+                </a>
+                <a href="kpi.html" class="nav-item">
+                    <span class="material-icons nav-icon">trending_up</span>
+                    Показатели KPI
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Коммуникации</div>
+                <a href="communications.html" class="nav-item">
+                    <span class="material-icons nav-icon">notifications</span>
+                    Уведомления
+                </a>
+                <a href="messages.html" class="nav-item">
+                    <span class="material-icons nav-icon">message</span>
+                    Сообщения
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="page-header">
+                <div class="breadcrumb">
+                    <a href="employee-dashboard.html">Главная</a>
+                    <span class="material-icons" style="font-size: 16px;">chevron_right</span>
+                    <a href="my-contracts.html">Мои договоры</a>
+                    <span class="material-icons" style="font-size: 16px;">chevron_right</span>
+                    <span>Оформление договора</span>
+                </div>
+                <h1 class="page-title">
+                    <span class="material-icons">add_circle</span>
+                    Оформление нового договора
+                </h1>
+                <p class="page-subtitle">Заполните информацию для оформления страхового договора</p>
+            </div>
+
+            <!-- Сообщение об успехе -->
+            <div class="success-message" id="successMessage">
+                <span class="material-icons" style="float: left; margin-right: 8px;">check_circle</span>
+                Договор успешно оформлен и отправлен на согласование!
+            </div>
+
+            <div class="contract-form-container">
+                <!-- Основная форма -->
+                <div class="form-content">
+                    <!-- Шаги оформления -->
+                    <div class="form-steps">
+                        <div class="step active" id="step1">
+                            <div class="step-circle">1</div>
+                            <div class="step-label">Клиент</div>
+                        </div>
+                        <div class="step" id="step2">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">Параметры</div>
+                        </div>
+                        <div class="step" id="step3">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">Дополнения</div>
+                        </div>
+                        <div class="step" id="step4">
+                            <div class="step-circle">4</div>
+                            <div class="step-label">Подтверждение</div>
+                        </div>
+                    </div>
+
+                    <form id="contractForm" onsubmit="return validateContractForm()">
+                        <!-- Шаг 1: Выбор клиента -->
+                        <div id="step1-content" class="form-step-content active">
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    <span class="material-icons">person</span>
+                                    Выбор клиента
+                                </h3>
+                                
+                                <div class="client-selector" onclick="openClientSelection()">
+                                    <div class="selector-icon">
+                                        <span class="material-icons">person_search</span>
+                                    </div>
+                                    <div class="selector-text">Выберите клиента из базы</div>
+                                    <div class="form-hint">Нажмите для выбора существующего клиента</div>
+                                </div>
+
+                                <div class="selected-client" id="selectedClient">
+                                    <div class="client-info">
+                                        <div class="client-avatar" id="clientAvatar">ИС</div>
+                                        <div class="client-details">
+                                            <div class="client-name" id="clientName">Иванов Сергей Петрович</div>
+                                            <div class="client-contacts" id="clientContacts">+7 912 345-67-89 • ivanov@mail.ru</div>
+                                        </div>
+                                        <button type="button" class="change-client" onclick="openClientSelection()">Изменить</button>
+                                    </div>
+                                </div>
+
+                                <div class="form-hint">
+                                    Или <a href="add-client.html" style="color: #1976d2;">добавьте нового клиента</a> в систему
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <a href="my-contracts.html" class="btn btn-secondary">
+                                    <span class="material-icons">arrow_back</span>
+                                    Отмена
+                                </a>
+                                <button type="button" class="btn btn-primary" onclick="goToStep(2)">
+                                    Далее
+                                    <span class="material-icons">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Шаг 2: Параметры страхования -->
+                        <div id="step2-content" class="form-step-content">
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    <span class="material-icons">settings</span>
+                                    Параметры страхования
+                                </h3>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label required">Тип страхования</label>
+                                        <select class="form-select" id="insuranceType" name="insuranceType" onchange="updateInsuranceParams()">
+                                            <option value="">Выберите тип</option>
+                                            <option value="auto_casco">КАСКО</option>
+                                            <option value="auto_osago">ОСАГО</option>
+                                            <option value="property">Недвижимость</option>
+                                            <option value="health">Здоровье</option>
+                                            <option value="travel">Путешествия</option>
+                                        </select>
+                                        <div class="error-message" id="insuranceTypeError"></div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label required">Страховая сумма</label>
+                                        <input type="number" class="form-input" id="insuranceAmount" name="insuranceAmount" placeholder="₽" oninput="calculatePremium()">
+                                        <div class="error-message" id="insuranceAmountError"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label required">Дата начала</label>
+                                        <input type="date" class="form-input" id="startDate" name="startDate" onchange="calculateEndDate()">
+                                        <div class="error-message" id="startDateError"></div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label required">Срок действия</label>
+                                        <select class="form-select" id="contractDuration" name="contractDuration" onchange="calculateEndDate()">
+                                            <option value="1">1 год</option>
+                                            <option value="2">2 года</option>
+                                            <option value="3">3 года</option>
+                                            <option value="5">5 лет</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Объект страхования</label>
+                                        <input type="text" class="form-input" id="insuredObject" name="insuredObject" placeholder="Например: Toyota Camry 2020 г.">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="goToStep(1)">
+                                    <span class="material-icons">arrow_back</span>
+                                    Назад
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="goToStep(3)">
+                                    Далее
+                                    <span class="material-icons">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Шаг 3: Дополнительные опции -->
+                        <div id="step3-content" class="form-step-content">
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    <span class="material-icons">add</span>
+                                    Дополнительные опции
+                                </h3>
+                                
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="emergencyAssistance" name="emergencyAssistance" onchange="calculatePremium()">
+                                    <label for="emergencyAssistance" class="checkbox-label">Экстренная помощь на дороге</label>
+                                </div>
+
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="legalSupport" name="legalSupport" onchange="calculatePremium()">
+                                    <label for="legalSupport" class="checkbox-label">Юридическая поддержка</label>
+                                </div>
+
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="medicalSupport" name="medicalSupport" onchange="calculatePremium()">
+                                    <label for="medicalSupport" class="checkbox-label">Медицинская консультация 24/7</label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Примечания</label>
+                                    <textarea class="form-textarea" id="contractNotes" name="contractNotes" placeholder="Дополнительная информация по договору..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="goToStep(2)">
+                                    <span class="material-icons">arrow_back</span>
+                                    Назад
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="goToStep(4)">
+                                    Далее
+                                    <span class="material-icons">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Шаг 4: Подтверждение -->
+                        <div id="step4-content" class="form-step-content">
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    <span class="material-icons">check_circle</span>
+                                    Подтверждение данных
+                                </h3>
+                                
+                                <div class="insurance-params">
+                                    <div class="param-row">
+                                        <span class="param-label">Клиент:</span>
+                                        <span class="param-value" id="confirmClientName">Иванов Сергей Петрович</span>
+                                    </div>
+                                    <div class="param-row">
+                                        <span class="param-label">Тип страхования:</span>
+                                        <span class="param-value" id="confirmInsuranceType">КАСКО</span>
+                                    </div>
+                                    <div class="param-row">
+                                        <span class="param-label">Страховая сумма:</span>
+                                        <span class="param-value" id="confirmInsuranceAmount">₽ 1,500,000</span>
+                                    </div>
+                                    <div class="param-row">
+                                        <span class="param-label">Срок действия:</span>
+                                        <span class="param-value" id="confirmContractPeriod">01.04.2024 - 31.03.2025</span>
+                                    </div>
+                                    <div class="param-row">
+                                        <span class="param-label">Премия:</span>
+                                        <span class="param-value" id="confirmPremium">₽ 45,000</span>
+                                    </div>
+                                </div>
+
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="termsAgreement" name="termsAgreement">
+                                    <label for="termsAgreement" class="checkbox-label">Я подтверждаю правильность введенных данных и соглашаюсь с условиями оформления договора</label>
+                                    <div class="error-message" id="termsAgreementError"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="goToStep(3)">
+                                    <span class="material-icons">arrow_back</span>
+                                    Назад
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <span class="material-icons">check</span>
+                                    Оформить договор
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Панель итогов -->
+                <div class="summary-panel">
+                    <h3 class="summary-title">
+                        <span class="material-icons">receipt</span>
+                        Сводка договора
+                    </h3>
+
+                    <div class="summary-section">
+                        <div class="summary-item">
+                            <span class="summary-label">Страховая сумма:</span>
+                            <span class="summary-value" id="summaryInsuranceAmount">₽ 0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Базовая премия:</span>
+                            <span class="summary-value" id="summaryBasePremium">₽ 0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Доп. опции:</span>
+                            <span class="summary-value" id="summaryOptions">₽ 0</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-section">
+                        <div class="total-amount" id="totalPremium">₽ 0</div>
+                        <div class="form-hint" style="text-align: center;">Итоговая страховая премия</div>
+                    </div>
+
+                    <div class="summary-section">
+                        <h4 class="section-title" style="font-size: 1rem;">
+                            <span class="material-icons">info</span>
+                            Информация
+                        </h4>
+                        <div class="form-hint">
+                            • Договор будет отправлен на согласование руководителю<br>
+                            • После согласования клиент получит уведомление<br>
+                            • Статус можно отслеживать в разделе "Мои договоры"
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let selectedClient = null;
+
+        // Переход между шагами
+        function goToStep(step) {
+            // Скрыть текущий шаг
+            document.getElementById(`step${currentStep}-content`).classList.remove('active');
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            
+            // Показать новый шаг
+            document.getElementById(`step${step}-content`).classList.add('active');
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            // Отметить пройденные шаги как completed
+            for (let i = 1; i < step; i++) {
+                document.getElementById(`step${i}`).classList.add('completed');
+            }
+            
+            currentStep = step;
+            updateSummary();
+        }
+
+        // Выбор клиента
+        function openClientSelection() {
+            // В реальном приложении здесь будет модальное окно с выбором клиента
+            const client = {
+                name: "Иванов Сергей Петрович",
+                phone: "+7 912 345-67-89",
+                email: "ivanov@mail.ru",
+                initials: "ИС"
+            };
+            
+            selectClient(client);
+        }
+
+        function selectClient(client) {
+            selectedClient = client;
+            document.getElementById('selectedClient').style.display = 'block';
+            document.getElementById('clientName').textContent = client.name;
+            document.getElementById('clientContacts').textContent = `${client.phone} • ${client.email}`;
+            document.getElementById('clientAvatar').textContent = client.initials;
+            
+            // Обновить подтверждение
+            document.getElementById('confirmClientName').textContent = client.name;
+        }
+
+        // Расчет параметров страхования
+        function updateInsuranceParams() {
+            const type = document.getElementById('insuranceType').value;
+            // Здесь будет логика обновления параметров в зависимости от типа страхования
+            calculatePremium();
+        }
+
+        function calculateEndDate() {
+            const startDate = document.getElementById('startDate').value;
+            const duration = document.getElementById('contractDuration').value;
+            
+            if (startDate) {
+                const start = new Date(startDate);
+                const end = new Date(start);
+                end.setFullYear(start.getFullYear() + parseInt(duration));
+                
+                const endDateStr = end.toLocaleDateString('ru-RU');
+                const startDateStr = start.toLocaleDateString('ru-RU');
+                document.getElementById('confirmContractPeriod').textContent = `${startDateStr} - ${endDateStr}`;
+            }
+            
+            calculatePremium();
+        }
+
+        function calculatePremium() {
+            const amount = parseFloat(document.getElementById('insuranceAmount').value) || 0;
+            const type = document.getElementById('insuranceType').value;
+            
+            // Базовая ставка в зависимости от типа страхования
+            let baseRate = 0.03; // 3% по умолчанию
+            
+            switch(type) {
+                case 'auto_casco':
+                    baseRate = 0.03;
+                    break;
+                case 'auto_osago':
+                    baseRate = 0.015;
+                    break;
+                case 'property':
+                    baseRate = 0.02;
+                    break;
+                case 'health':
+                    baseRate = 0.04;
+                    break;
+                case 'travel':
+                    baseRate = 0.05;
+                    break;
+            }
+            
+            const basePremium = amount * baseRate;
+            
+            // Дополнительные опции
+            let optionsPremium = 0;
+            if (document.getElementById('emergencyAssistance').checked) optionsPremium += 5000;
+            if (document.getElementById('legalSupport').checked) optionsPremium += 3000;
+            if (document.getElementById('medicalSupport').checked) optionsPremium += 7000;
+            
+            const totalPremium = basePremium + optionsPremium;
+            
+            // Обновление панели итогов
+            document.getElementById('summaryInsuranceAmount').textContent = `₽ ${amount.toLocaleString()}`;
+            document.getElementById('summaryBasePremium').textContent = `₽ ${Math.round(basePremium).toLocaleString()}`;
+            document.getElementById('summaryOptions').textContent = `₽ ${optionsPremium.toLocaleString()}`;
+            document.getElementById('totalPremium').textContent = `₽ ${Math.round(totalPremium).toLocaleString()}`;
+            
+            // Обновление подтверждения
+            document.getElementById('confirmInsuranceAmount').textContent = `₽ ${amount.toLocaleString()}`;
+            document.getElementById('confirmPremium').textContent = `₽ ${Math.round(totalPremium).toLocaleString()}`;
+            
+            const typeNames = {
+                'auto_casco': 'КАСКО',
+                'auto_osago': 'ОСАГО', 
+                'property': 'Недвижимость',
+                'health': 'Здоровье',
+                'travel': 'Путешествия'
+            };
+            
+            if (type) {
+                document.getElementById('confirmInsuranceType').textContent = typeNames[type];
+            }
+        }
+
+        // Валидация формы
+        function validateContractForm() {
+            let isValid = true;
+            
+            // Проверка согласия с условиями
+            if (!document.getElementById('termsAgreement').checked) {
+                document.getElementById('termsAgreementError').textContent = 'Необходимо согласие с условиями договора';
+                isValid = false;
+            } else {
+                document.getElementById('termsAgreementError').textContent = '';
+            }
+            
+            if (isValid) {
+                // Имитация успешного оформления
+                document.getElementById('successMessage').style.display = 'block';
+                setTimeout(() => {
+                    window.location.href = 'my-contracts.html';
+                }, 3000);
+            }
+            
+            return false; // Предотвращаем реальную отправку формы
+        }
+
+        // Обновление сводки
+        function updateSummary() {
+            calculatePremium();
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Страница оформления договора загружена');
+            
+            // Установка даты начала по умолчанию (сегодня)
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').value = today;
+            calculateEndDate();
+            
+            // Выбор тестового клиента по умолчанию
+            openClientSelection();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsureFlow - Мониторинг системы</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 70px;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo-icon {
+            color: #1976d2;
+            font-size: 32px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1976d2;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: #1a237e;
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: #546e7a;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid #e0e0e0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #757575;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #f5f5f5;
+            color: #d32f2f;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            padding: 0 1.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #546e7a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 1.5rem;
+            text-decoration: none;
+            color: #37474f;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #f3f7ff;
+            color: #1976d2;
+        }
+
+        .nav-item.active {
+            background: #f3f7ff;
+            color: #1976d2;
+            border-left-color: #1976d2;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .main-content {
+            min-height: 600px;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-subtitle {
+            color: #546e7a;
+        }
+
+        /* Статус системы */
+        .system-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .status-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border-left: 4px solid #4caf50;
+        }
+
+        .status-card.warning {
+            border-left-color: #ff9800;
+        }
+
+        .status-card.error {
+            border-left-color: #f44336;
+        }
+
+        .status-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .status-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #546e7a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .icon-success {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .icon-warning {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .icon-error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 0.25rem;
+        }
+
+        .status-description {
+            font-size: 0.875rem;
+            color: #546e7a;
+        }
+
+        /* Метрики в реальном времени */
+        .live-metrics {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .metrics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .metrics-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .metric-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1976d2;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #546e7a;
+            font-weight: 500;
+        }
+
+        .metric-trend {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .trend-up {
+            color: #2e7d32;
+        }
+
+        .trend-down {
+            color: #c62828;
+        }
+
+        /* Графики и диаграммы */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chart-placeholder {
+            background: #f8f9fa;
+            border-radius: 8px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #546e7a;
+            border: 2px dashed #e0e0e0;
+        }
+
+        /* Логи и события */
+        .logs-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .logs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .logs-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .logs-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #37474f;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: white;
+        }
+
+        .logs-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .logs-table th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #37474f;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .logs-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+
+        .logs-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .log-level {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .level-info {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .level-warning {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .level-error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .level-critical {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .log-message {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Предупреждения */
+        .alerts-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .alerts-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .alerts-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid transparent;
+        }
+
+        .alert-warning {
+            background: #fff3e0;
+            border-left-color: #ff9800;
+        }
+
+        .alert-error {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-icon {
+            font-size: 1.5rem;
+            margin-top: 2px;
+        }
+
+        .alert-warning .alert-icon {
+            color: #ff9800;
+        }
+
+        .alert-error .alert-icon {
+            color: #f44336;
+        }
+
+        .alert-info .alert-icon {
+            color: #2196f3;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            color: #37474f;
+            margin-bottom: 0.25rem;
+        }
+
+        .alert-description {
+            color: #546e7a;
+            font-size: 0.9rem;
+        }
+
+        .alert-time {
+            color: #90a4ae;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .alert-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Кнопки */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn-outline {
+            background: white;
+            color: #1976d2;
+            border: 1px solid #1976d2;
+        }
+
+        .btn-outline:hover {
+            background: #f5f9ff;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #1976d2;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 4px;
+            transition: background 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            background: #f3f7ff;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .system-status {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logs-filters {
+                flex-direction: column;
+            }
+            
+            .metrics-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .chart-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="admin-dashboard.html" class="logo">
+                <span class="material-icons logo-icon">business_center</span>
+                <span class="logo-text">InsureFlow</span>
+            </a>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <div class="user-name">Петров Алексей</div>
+                    <div class="user-role">Системный администратор</div>
+                </div>
+                <button class="logout-btn" onclick="location.href='login-index.html'">
+                    <span class="material-icons">logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-title">Главная</div>
+                <a href="admin-dashboard.html" class="nav-item">
+                    <span class="material-icons nav-icon">dashboard</span>
+                    Панель управления
+                </a>
+                <a href="admin-approvals.html" class="nav-item">
+                    <span class="material-icons nav-icon">approval</span>
+                    Одобрение договоров
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Управление пользователями</div>
+                <a href="admin-users.html" class="nav-item">
+                    <span class="material-icons nav-icon">people</span>
+                    Управление сотрудниками
+                </a>
+                <a href="admin-clients.html" class="nav-item">
+                    <span class="material-icons nav-icon">groups</span>
+                    Управление клиентами
+                </a>
+                <a href="admin-access.html" class="nav-item">
+                    <span class="material-icons nav-icon">lock</span>
+                    Управление доступом
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Управление системой</div>
+                <a href="admin-roles.html" class="nav-item">
+                    <span class="material-icons nav-icon">admin_panel_settings</span>
+                    Управление ролями
+                </a>
+                <a href="admin-tariffs.html" class="nav-item">
+                    <span class="material-icons nav-icon">attach_money</span>
+                    Управление тарифами
+                </a>
+                <a href="admin-settings.html" class="nav-item">
+                    <span class="material-icons nav-icon">settings</span>
+                    Системные настройки
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Мониторинг</div>
+                <a href="admin-monitoring.html" class="nav-item active">
+                    <span class="material-icons nav-icon">monitoring</span>
+                    Мониторинг системы
+                </a>
+                <a href="admin-analytics.html" class="nav-item">
+                    <span class="material-icons nav-icon">analytics</span>
+                    Аналитика системы
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span class="material-icons">monitoring</span>
+                    Мониторинг системы
+                </h1>
+                <p class="page-subtitle">Мониторинг производительности, безопасности и состояния системы в реальном времени</p>
+            </div>
+
+            <!-- Статус системы -->
+            <div class="system-status">
+                <div class="status-card">
+                    <div class="status-header">
+                        <div class="status-title">Статус системы</div>
+                        <div class="status-icon icon-success">
+                            <span class="material-icons">check_circle</span>
+                        </div>
+                    </div>
+                    <div class="status-value">Работает</div>
+                    <div class="status-description">Все сервисы активны</div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-header">
+                        <div class="status-title">Загрузка CPU</div>
+                        <div class="status-icon icon-success">
+                            <span class="material-icons">memory</span>
+                        </div>
+                    </div>
+                    <div class="status-value">24%</div>
+                    <div class="status-description">Нормальная нагрузка</div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-header">
+                        <div class="status-title">Память</div>
+                        <div class="status-icon icon-warning">
+                            <span class="material-icons">storage</span>
+                        </div>
+                    </div>
+                    <div class="status-value">78%</div>
+                    <div class="status-description">Требуется наблюдение</div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-header">
+                        <div class="status-title">Дисковое пространство</div>
+                        <div class="status-icon icon-success">
+                            <span class="material-icons">hard_drive</span>
+                        </div>
+                    </div>
+                    <div class="status-value">45%</div>
+                    <div class="status-description">Достаточно свободно</div>
+                </div>
+            </div>
+
+            <!-- Метрики в реальном времени -->
+            <div class="live-metrics">
+                <div class="metrics-header">
+                    <h3 class="metrics-title">Метрики в реальном времени</h3>
+                    <div class="metrics-actions">
+                        <button class="btn btn-outline" onclick="refreshMetrics()">
+                            <span class="material-icons">refresh</span>
+                            Обновить
+                        </button>
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">1,247</div>
+                        <div class="metric-label">Активных сессий</div>
+                        <div class="metric-trend trend-up">
+                            <span class="material-icons">arrow_upward</span>
+                            +12 за час
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-value">89</div>
+                        <div class="metric-label">Запросов в секунду</div>
+                        <div class="metric-trend trend-down">
+                            <span class="material-icons">arrow_downward</span>
+                            -3 за час
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-value">156ms</div>
+                        <div class="metric-label">Среднее время ответа</div>
+                        <div class="metric-trend trend-up">
+                            <span class="material-icons">arrow_upward</span>
+                            +8ms за час
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-value">99.8%</div>
+                        <div class="metric-label">Доступность API</div>
+                        <div class="metric-trend">
+                            <span class="material-icons">minimize</span>
+                            Стабильно
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Графики и диаграммы -->
+            <div class="charts-section">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h4 class="chart-title">Нагрузка системы за 24 часа</h4>
+                        <div class="chart-actions">
+                            <button class="btn btn-outline">
+                                <span class="material-icons">download</span>
+                            </button>
+                            <button class="btn btn-outline">
+                                <span class="material-icons">fullscreen</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-placeholder">
+                        <div style="text-align: center;">
+                            <span class="material-icons" style="font-size: 3rem; color: #bdbdbd; margin-bottom: 1rem;">bar_chart</span>
+                            <div>График нагрузки системы</div>
+                            <div style="font-size: 0.8rem; margin-top: 0.5rem;">Здесь будет отображаться график загрузки CPU, памяти и диска</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h4 class="chart-title">Распределение ошибок</h4>
+                        <div class="chart-actions">
+                            <button class="btn btn-outline">
+                                <span class="material-icons">refresh</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-placeholder">
+                        <div style="text-align: center;">
+                            <span class="material-icons" style="font-size: 3rem; color: #bdbdbd; margin-bottom: 1rem;">pie_chart</span>
+                            <div>Круговая диаграмма ошибок</div>
+                            <div style="font-size: 0.8rem; margin-top: 0.5rem;">Статистика по типам ошибок системы</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Логи и события -->
+            <div class="logs-section">
+                <div class="logs-header">
+                    <h3 class="logs-title">Системные логи</h3>
+                    <button class="btn btn-outline">
+                        <span class="material-icons">file_download</span>
+                        Экспорт логов
+                    </button>
+                </div>
+
+                <div class="logs-filters">
+                    <div class="filter-group">
+                        <label class="filter-label">Уровень логирования</label>
+                        <select class="filter-select" onchange="filterLogs()">
+                            <option value="all">Все уровни</option>
+                            <option value="info">Info</option>
+                            <option value="warning">Warning</option>
+                            <option value="error">Error</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Период</label>
+                        <select class="filter-select" onchange="filterLogs()">
+                            <option value="1h">Последний час</option>
+                            <option value="24h" selected>Последние 24 часа</option>
+                            <option value="7d">Последние 7 дней</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Сервис</label>
+                        <select class="filter-select" onchange="filterLogs()">
+                            <option value="all">Все сервисы</option>
+                            <option value="api">API Gateway</option>
+                            <option value="database">База данных</option>
+                            <option value="auth">Аутентификация</option>
+                            <option value="payment">Платежи</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>Время</th>
+                                <th>Уровень</th>
+                                <th>Сервис</th>
+                                <th>Сообщение</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>01.04.2024 14:35:22</td>
+                                <td>
+                                    <span class="log-level level-info">Info</span>
+                                </td>
+                                <td>API Gateway</td>
+                                <td class="log-message">Успешная обработка запроса от клиента #12458</td>
+                                <td>
+                                    <button class="action-btn">
+                                        <span class="material-icons">visibility</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>01.04.2024 14:30:15</td>
+                                <td>
+                                    <span class="log-level level-warning">Warning</span>
+                                </td>
+                                <td>База данных</td>
+                                <td class="log-message">Медленный запрос к таблице contracts (>2s)</td>
+                                <td>
+                                    <button class="action-btn">
+                                        <span class="material-icons">visibility</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>01.04.2024 14:28:47</td>
+                                <td>
+                                    <span class="log-level level-error">Error</span>
+                                </td>
+                                <td>Аутентификация</td>
+                                <td class="log-message">Неудачная попытка входа с неверным паролем для пользователя admin</td>
+                                <td>
+                                    <button class="action-btn">
+                                        <span class="material-icons">visibility</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>01.04.2024 14:25:33</td>
+                                <td>
+                                    <span class="log-level level-critical">Critical</span>
+                                </td>
+                                <td>Платежи</td>
+                                <td class="log-message">Ошибка подключения к платежному шлюзу</td>
+                                <td>
+                                    <button class="action-btn">
+                                        <span class="material-icons">visibility</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>01.04.2024 14:20:18</td>
+                                <td>
+                                    <span class="log-level level-info">Info</span>
+                                </td>
+                                <td>API Gateway</td>
+                                <td class="log-message">Запуск процедуры ежедневного бэкапа</td>
+                                <td>
+                                    <button class="action-btn">
+                                        <span class="material-icons">visibility</span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Предупреждения -->
+            <div class="alerts-section">
+                <div class="alerts-header">
+                    <h3 class="alerts-title">Активные предупреждения</h3>
+                    <button class="btn btn-outline">
+                        <span class="material-icons">notifications_off</span>
+                        Отключить уведомления
+                    </button>
+                </div>
+
+                <div class="alerts-list">
+                    <div class="alert-item alert-warning">
+                        <div class="alert-icon">
+                            <span class="material-icons">warning</span>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">Высокая загрузка памяти</div>
+                            <div class="alert-description">
+                                Использование памяти сервера приложений достигло 78%. Рекомендуется оптимизация или добавление ресурсов.
+                            </div>
+                            <div class="alert-time">Обновлено 5 минут назад</div>
+                        </div>
+                        <div class="alert-actions">
+                            <button class="action-btn">
+                                <span class="material-icons">check</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="alert-item alert-error">
+                        <div class="alert-icon">
+                            <span class="material-icons">error</span>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">Ошибка подключения к БД</div>
+                            <div class="alert-description">
+                                Вторичная реплика базы данных недоступна. Проверьте сетевое подключение и состояние сервера.
+                            </div>
+                            <div class="alert-time">Обнаружено 15 минут назад</div>
+                        </div>
+                        <div class="alert-actions">
+                            <button class="action-btn">
+                                <span class="material-icons">check</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="alert-item alert-info">
+                        <div class="alert-icon">
+                            <span class="material-icons">info</span>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">Запланированное обслуживание</div>
+                            <div class="alert-description">
+                                Запланированы работы по обновлению системы на 02.04.2024 с 03:00 до 05:00 МСК.
+                            </div>
+                            <div class="alert-time">Уведомление отправлено 2 часа назад</div>
+                        </div>
+                        <div class="alert-actions">
+                            <button class="action-btn">
+                                <span class="material-icons">check</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function refreshMetrics() {
+            alert('Метрики обновляются...');
+            // Здесь будет логика обновления метрик в реальном времени
+        }
+
+        function filterLogs() {
+            // Здесь будет логика фильтрации логов
+            console.log('Фильтры применены');
+        }
+
+        // Автоматическое обновление метрик каждые 30 секунд
+        setInterval(() => {
+            // Здесь будет логика автоматического обновления данных
+            console.log('Автоматическое обновление метрик...');
+        }, 30000);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Страница мониторинга системы загружена');
+            
+            // Имитация живых данных
+            setInterval(updateLiveMetrics, 5000);
+        });
+
+        function updateLiveMetrics() {
+            // Имитация изменения метрик
+            const sessions = document.querySelector('.metric-card:nth-child(1) .metric-value');
+            const requests = document.querySelector('.metric-card:nth-child(2) .metric-value');
+            const responseTime = document.querySelector('.metric-card:nth-child(3) .metric-value');
+            
+            // Случайные небольшие изменения
+            const sessionsChange = Math.floor(Math.random() * 5) - 2;
+            const requestsChange = Math.floor(Math.random() * 3) - 1;
+            const responseChange = Math.floor(Math.random() * 4) - 1;
+            
+            // Обновление значений (в реальном приложении здесь был бы AJAX запрос)
+            console.log('Метрики обновлены:', { sessionsChange, requestsChange, responseChange });
+        }
+    </script>
+</body>
+</html>
