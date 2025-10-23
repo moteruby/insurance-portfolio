@@ -60,6 +60,10 @@
 
 <img width="875" height="850" alt="image" src="https://github.com/user-attachments/assets/94edb613-1e81-4852-8ecd-798d44a16c96" />
 
+Кодовый уровень
+
+<img width="961" height="829" alt="image" src="https://github.com/user-attachments/assets/2d7218dd-5217-48f7-8a03-c45e35b8aa47" />
+
 ### Схема данных
 
 <img width="1573" height="1188" alt="шеоперщшпо2" src="https://github.com/user-attachments/assets/5fbd51bc-2f59-478b-ba82-5398ab2b84f9" />
