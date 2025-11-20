@@ -50,259 +50,104 @@
 
 Контекстный уровень
 
-<img width="650" height="630" alt="image" src="https://github.com/user-attachments/assets/c3e70b12-3e17-4633-a25d-0799247ba34b" />
+<img width="611" height="572" alt="image" src="https://github.com/user-attachments/assets/c9a1e26e-23ab-4f9f-b92b-ab13f126a694" />
 
 Контейнерный уровень
 
-<img width="529" height="525" alt="image" src="https://github.com/user-attachments/assets/58d5a339-f354-4a2c-8f0d-71ec4b23e3a6" />
+<img width="537" height="633" alt="image" src="https://github.com/user-attachments/assets/d869ac01-83d6-4f7c-97ef-e7a6c0d4f945" />
 
 Компонентный уровень
 
-<img width="875" height="850" alt="image" src="https://github.com/user-attachments/assets/94edb613-1e81-4852-8ecd-798d44a16c96" />
+<img width="875" height="526" alt="image" src="https://github.com/user-attachments/assets/6540f7d5-9d81-44f3-8018-2afd6a40e2d2" />
 
 Кодовый уровень
 
-<img width="961" height="829" alt="image" src="https://github.com/user-attachments/assets/2d7218dd-5217-48f7-8a03-c45e35b8aa47" />
+<img width="963" height="487" alt="image" src="https://github.com/user-attachments/assets/06c4f0b2-86ab-4cea-9867-09f90946fc3f" />
 
 ### Схема данных
 
-<img width="1573" height="1188" alt="шеоперщшпо2" src="https://github.com/user-attachments/assets/5fbd51bc-2f59-478b-ba82-5398ab2b84f9" />
-
+<img width="559" height="736" alt="image" src="https://github.com/user-attachments/assets/3c234e9c-a005-4b1e-8a39-99983d9f891c" />
 
 Скрипт для БД:
 
-CREATE DATABASE insurance_portfolio_reporting;
-USE insurance_portfolio_reporting;
+CREATE DATABASE IF NOT EXISTS insurance_portfolio
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE insurance_portfolio;
 
 CREATE TABLE users (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    role ENUM('CUSTOMER', 'EMPLOYEE', 'ADMIN') NOT NULL,
-    is_active BOOLEAN DEFAULT TRUE,
+    role VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE personal_data (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    phone VARCHAR(20),
-    email VARCHAR(100),
-    address TEXT,
-    passport_series VARCHAR(10),
-    passport_number VARCHAR(10),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE user_personal_data (
-    user_id BIGINT PRIMARY KEY,
-    personal_data_id BIGINT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (personal_data_id) REFERENCES personal_data(id) ON DELETE CASCADE
-);
-
-CREATE TABLE insurance_product_types (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(50) UNIQUE NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    description TEXT,
-    base_rate DECIMAL(5,4) NOT NULL,
-    is_active BOOLEAN DEFAULT TRUE
-);
-
-CREATE TABLE policy_statuses (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(50) UNIQUE NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    description TEXT
 );
 
 CREATE TABLE policies (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    policy_number VARCHAR(50) UNIQUE NOT NULL,
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    policy_number VARCHAR(100) NOT NULL UNIQUE,
     user_id BIGINT NOT NULL,
-    insurant_personal_data_id BIGINT NOT NULL, -- ссылка на personal_data
-    product_type_id BIGINT NOT NULL,
-    status_id BIGINT NOT NULL,
-    sum_insured DECIMAL(15,2) NOT NULL,
-    premium DECIMAL(15,2) NOT NULL,
     start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (insurant_personal_data_id) REFERENCES personal_data(id),
-    FOREIGN KEY (product_type_id) REFERENCES insurance_product_types(id),
-    FOREIGN KEY (status_id) REFERENCES policy_statuses(id)
+    end_date DATE,
+    status VARCHAR(50) NOT NULL,
+
+    FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
 );
 
-CREATE TABLE insured_objects (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    object_type VARCHAR(100) NOT NULL, -- 'VEHICLE', 'PROPERTY', 'PERSON'
-    description TEXT
-);
-
-CREATE TABLE policy_details (
-    policy_id BIGINT PRIMARY KEY,
-    insured_object_id BIGINT NOT NULL,
-    additional_conditions TEXT,
-    risk_factors JSON,
-    FOREIGN KEY (policy_id) REFERENCES policies(id) ON DELETE CASCADE,
-    FOREIGN KEY (insured_object_id) REFERENCES insured_objects(id)
-);
-
-CREATE TABLE payment_statuses (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(50) UNIQUE NOT NULL,
-    name VARCHAR(100) NOT NULL
-);
-
-CREATE TABLE payment_methods (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(50) UNIQUE NOT NULL,
-    name VARCHAR(100) NOT NULL
-);
-
-CREATE TABLE payments (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE premiums (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
     policy_id BIGINT NOT NULL,
     amount DECIMAL(15,2) NOT NULL,
-    payment_date DATE NOT NULL,
-    status_id BIGINT NOT NULL,
-    payment_method_id BIGINT NOT NULL,
-    transaction_id VARCHAR(100),
+    due_date DATE NOT NULL,
+    paid BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (policy_id) REFERENCES policies(id),
-    FOREIGN KEY (status_id) REFERENCES payment_statuses(id),
-    FOREIGN KEY (payment_method_id) REFERENCES payment_methods(id)
+
+    FOREIGN KEY (policy_id) REFERENCES policies(id)
+        ON DELETE CASCADE
 );
 
-CREATE TABLE claim_statuses (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(50) UNIQUE NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    description TEXT
-);
+CREATE INDEX idx_premiums_policy_id ON premiums(policy_id);
 
-CREATE TABLE claims (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    claim_number VARCHAR(50) UNIQUE NOT NULL,
+CREATE TABLE payouts (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
     policy_id BIGINT NOT NULL,
-    status_id BIGINT NOT NULL,
-    incident_date DATE NOT NULL,
-    description TEXT NOT NULL,
-    claimed_amount DECIMAL(15,2) NOT NULL,
-    approved_amount DECIMAL(15,2),
+    amount DECIMAL(15,2) NOT NULL,
+    payout_date DATE NOT NULL,
+    reason VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (policy_id) REFERENCES policies(id),
-    FOREIGN KEY (status_id) REFERENCES claim_statuses(id)
+
+    FOREIGN KEY (policy_id) REFERENCES policies(id)
+        ON DELETE CASCADE
 );
 
-CREATE TABLE document_types (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(50) UNIQUE NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    description TEXT
-);
-
-CREATE TABLE claim_documents (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    claim_id BIGINT NOT NULL,
-    document_type_id BIGINT NOT NULL,
-    file_name VARCHAR(255) NOT NULL,
-    file_size BIGINT NOT NULL,
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (claim_id) REFERENCES claims(id) ON DELETE CASCADE,
-    FOREIGN KEY (document_type_id) REFERENCES document_types(id)
-);
-
-CREATE TABLE report_types (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(50) UNIQUE NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    description TEXT
-);
-
-CREATE TABLE report_formats (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(50) UNIQUE NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    file_extension VARCHAR(10) NOT NULL
-);
-
+CREATE INDEX idx_payouts_policy_id ON payouts(policy_id);
 
 CREATE TABLE reports (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    report_type_id BIGINT NOT NULL,
-    format_id BIGINT NOT NULL,
-    file_name VARCHAR(255) NOT NULL,
-    file_size BIGINT NOT NULL,
-    generated_by BIGINT NOT NULL,
-    generation_parameters JSON,
-    generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (report_type_id) REFERENCES report_types(id),
-    FOREIGN KEY (format_id) REFERENCES report_formats(id),
-    FOREIGN KEY (generated_by) REFERENCES users(id)
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    report_type VARCHAR(100) NOT NULL,
+    created_by BIGINT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_json JSON,
+
+    FOREIGN KEY (created_by) REFERENCES users(id)
+        ON DELETE SET NULL
 );
 
+CREATE TABLE stored_files (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    report_id BIGINT,
+    file_name VARCHAR(255) NOT NULL,
+    file_type VARCHAR(50) NOT NULL,
+    storage_path VARCHAR(500) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-INSERT INTO insurance_product_types (code, name, description, base_rate) VALUES 
-('CAR_INSURANCE', 'Автострахование', 'Страхование автомобилей', 0.05),
-('HEALTH_INSURANCE', 'Медицинское страхование', 'Страхование здоровья', 0.03),
-('PROPERTY_INSURANCE', 'Имущественное страхование', 'Страхование недвижимости', 0.02),
-('LIFE_INSURANCE', 'Страхование жизни', 'Жизненное страхование', 0.015);
+    FOREIGN KEY (report_id) REFERENCES reports(id)
+        ON DELETE CASCADE
+);
 
-INSERT INTO policy_statuses (code, name, description) VALUES 
-('ACTIVE', 'Активен', 'Полис действует'),
-('EXPIRED', 'Истек', 'Срок действия полиса истек'),
-('CANCELLED', 'Аннулирован', 'Полис отменен'),
-('PENDING_PAYMENT', 'Ожидает оплаты', 'Ожидается оплата по полису');
-
-INSERT INTO payment_statuses (code, name) VALUES 
-('PENDING', 'Ожидает'),
-('COMPLETED', 'Завершен'),
-('FAILED', 'Неудачный'),
-('REFUNDED', 'Возвращен');
-
-INSERT INTO payment_methods (code, name) VALUES 
-('BANK_CARD', 'Банковская карта'),
-('BANK_TRANSFER', 'Банковский перевод'),
-('ELECTRONIC_WALLET', 'Электронный кошелек');
-
-INSERT INTO claim_statuses (code, name, description) VALUES 
-('NEW', 'Новый', 'Новое заявление'),
-('UNDER_REVIEW', 'На рассмотрении', 'Заявление рассматривается'),
-('APPROVED', 'Одобрен', 'Выплата одобрена'),
-('REJECTED', 'Отклонен', 'Выплата отклонена'),
-('PAID', 'Выплачен', 'Выплата произведена');
-
-INSERT INTO document_types (code, name, description) VALUES 
-('CLAIM_FORM', 'Заявление', 'Заявление о страховом случае'),
-('DAMAGE_ACT', 'Акт осмотра', 'Акт осмотра повреждений'),
-('POLICE_REPORT', 'Протокол', 'Протокол ГИБДД'),
-('EXPERT_REPORT', 'Заключение эксперта', 'Заключение независимого эксперта');
-
-INSERT INTO report_types (code, name, description) VALUES 
-('FINANCIAL', 'Финансовый', 'Финансовая отчетность'),
-('PORTFOLIO', 'Портфельный', 'Анализ страхового портфеля'),
-('CLAIMS', 'Убыточность', 'Отчет по убыткам'),
-('OPERATIONAL', 'Операционный', 'Операционная отчетность');
-
-INSERT INTO report_formats (code, name, file_extension) VALUES 
-('PDF', 'PDF документ', '.pdf'),
-('EXCEL', 'Excel файл', '.xlsx'),
-('HTML', 'HTML отчет', '.html');
-
-CREATE INDEX idx_policies_user_id ON policies(user_id);
-CREATE INDEX idx_policies_insurant_id ON policies(insurant_personal_data_id);
-CREATE INDEX idx_policies_status ON policies(status_id);
-CREATE INDEX idx_payments_policy_id ON payments(policy_id);
-CREATE INDEX idx_claims_policy_id ON claims(policy_id);
-CREATE INDEX idx_claims_status ON claims(status_id);
-
+CREATE INDEX idx_file_report_id ON stored_files(report_id);
 
 ---
 
