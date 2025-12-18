@@ -1,0 +1,30 @@
+.reports h1 {
+  margin-bottom: 30px;
+}
+
+.report-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.report-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.report-data {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.report-data pre {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
