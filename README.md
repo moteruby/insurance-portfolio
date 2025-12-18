@@ -159,9 +159,9 @@ CREATE INDEX idx_file_report_id ON stored_files(report_id);
 
 ### User-flow диаграмм
 
-User-flow для клиента
+User-flow для аналитика
 
-<img width="657" height="773" alt="image" src="https://github.com/user-attachments/assets/a7908171-9529-461e-8da2-4d402648f2d1" />
+<img width="657" height="427" alt="image" src="https://github.com/user-attachments/assets/fe024c5f-d689-466b-8223-b4da2deeea43" />
 
 User-flow для сотрудника страховой компании
 
@@ -169,7 +169,7 @@ User-flow для сотрудника страховой компании
 
 User-flow для администратора
 
-<img width="975" height="603" alt="image" src="https://github.com/user-attachments/assets/7a164c07-e349-4204-9377-b41dcf062550" />
+<img width="903" height="603" alt="image" src="https://github.com/user-attachments/assets/ab8e49a4-d8a5-47fd-9a56-d46b2165c7c5" />
 
 ---
 
@@ -299,31 +299,152 @@ User-flow для администратора
 
 ### UML-диаграммы
 
-Представить все UML-диаграммы , которые позволят более точно понять структуру и детали реализации ПС
+ <img width="974" height="310" alt="image" src="https://github.com/user-attachments/assets/330a8da1-fe17-4dbe-b6e3-e6fc7ed17e33" />
+
+Диаграмма развертывания
+
+<img width="755" height="690" alt="image" src="https://github.com/user-attachments/assets/cc595a40-feb8-46cc-ab9e-c75e5a1843e2" />
+
+Диаграмма пакетов insurance-portfolio
+
+<img width="975" height="642" alt="image" src="https://github.com/user-attachments/assets/0801a92a-5874-4e1e-86de-86b1734ed350" />
+
+Диаграмма вариантов использования
+
+<img width="765" height="910" alt="image" src="https://github.com/user-attachments/assets/c162c63b-22aa-42f4-946b-e945174c5321" />
+
+Диаграмма состояний отчета
+
+<img width="623" height="676" alt="image" src="https://github.com/user-attachments/assets/03de332f-fa66-4736-85b3-24c83bab0693" />
+
+Диаграмма последовательности
+
+<img width="897" height="741" alt="image" src="https://github.com/user-attachments/assets/80d1f0aa-aaeb-43cd-9c6c-384f70250ee1" />
+
+Диаграмма деятельности 
 
 ### Спецификация API
 
-Представить описание реализованных функциональных возможностей ПС с использованием Open API (можно представить либо полный файл спецификации, либо ссылку на него)
+Была разработана документация к разработанному API с использованием Swagger. 
+На рисунке 1 представлена спецификация для системы ведения отчетности страхового портфеля. 
+
+ <img width="975" height="681" alt="image" src="https://github.com/user-attachments/assets/62a9a991-2f43-42ac-8e96-2a57b6d3b7b5" />
+
+Рисунок 1 – Спецификация для страховых агентов и аутентификации
+
+На рисунке 2 представлена спецификация для клиентов и страховых отчетов. 
+
+<img width="852" height="623" alt="image" src="https://github.com/user-attachments/assets/0056d4f1-45b4-426c-9ebc-eea5f7a5c611" />
+
+Рисунок 2 – Спецификация для клиентов и страховых отчетов
+
+На рисунке 3 представлена спецификация для платежей и полисов. 
+
+ <img width="975" height="487" alt="image" src="https://github.com/user-attachments/assets/faf9a073-d087-4f71-b751-29699f06947a" />
+
+Рисунок 3 – Спецификация для платежей и полисов
+
+На рисунке 4 представлена спецификация для пользователей и страховых случаев. 
+
+ <img width="904" height="521" alt="image" src="https://github.com/user-attachments/assets/da8861c7-1709-4c01-bedf-0d5e497fc8d2" />
+
+Рисунок 4 – Спецификация для пользователей и страховых случаев
+
+В итоге была разработана документация.
 
 ### Безопасность
 
-Описать подходы, использованные для обеспечения безопасности, включая описание процессов аутентификации и авторизации с примерами кода из репозитория сервера
+Результаты внедрения системы безопасности
+
+Spring Security Framework как основа защиты:
+– все запросы проходят через Security Filter Chain;
+– JWT валидация на уровне фильтров;
+– маршрутизация на основе ролей пользователей.
+Security Config как центр аутентификации:
+– централизованное управление пользователями;
+– генерация и валидация JWT токенов;
+– управление ролями и правами доступа.
+Многоуровневая система авторизации:
+– проверка прав доступа на уровне URL;
+– проверка на уровне методов с @PreAuthorize;
+– проверка на уровне бизнес-логики.
+Распределенная проверка прав доступа:
+– каждый сервис проверяет права доступа к данным;
+– использование PermissionService для проверки прав;
+– передача контекста пользователя через SecurityContext.
+Внедрение этих компонентов безопасности трансформировало архитектуру в единую, защищенную систему. Централизация аутентификации и использование многоуровневой авторизации являются фундаментальными изменениями, повышающими безопасность и управляемость страховых данных.
+BCrypt – это криптографическая хеш-функция для паролей, разработанная на основе шифра Blowfish. Основные преимущества:
+1 Адаптивность: можно увеличивать сложность вычисления.
+2 Salt: автоматически генерируется уникальная соль для каждого пароля.
+3 Защита от rainbow tables: невозможно использовать предвычисленные таблицы.
+
+Компоненты системы безопасности
+
+5.2.1 Security Framework (Spring Security). Функции:
+– единая точка входа для всех запросов;
+– валидация JWT токенов;
+– управление доступом на основе ролей;
+– CORS configuration;
+– Protection against CSRF.
+Технологии:
+– Spring Security;
+– Servlet Filters;
+– JWT validation;
+– BCrypt password encoding.
+
+5.2.2 Authentication Service (Port: 8080). Функции:
+– аутентификация пользователей (логин);
+– генерация JWT токенов;
+– управление пользователями;
+– регистрация новых пользователей (для администраторов);
+– ведение аудита действий.
+Технологии:
+– Spring Boot;
+– Spring Security;
+– Spring Data JPA;
+– PostgreSQL;
+– JWT (JJWT);
+– BCrypt.
+
+5.2.3 Database Layer (PostgreSQL Port: 5432)
+Функции:
+– хранение пользователей и их ролей;
+– хранение данных клиентов и полисов;
+– хранение событий аудита;
+– хранение филиалов и агентов.
+Таблицы безопасности:
+
+Код реализации представлен в папке src.
 
 ### Оценка качества кода
 
-Используя показатели качества и метрики кода, оценить его качество
+Анализ результатов:
+1 Model и DTO классы демонстрируют высокое покрытие (79-80%), что свидетельствует о тщательном тестировании бизнес-логики и структур данных.
+2 Controller слой имеет покрытие 76%, что является хорошим показателем для REST API. Написано 46 integration тестов, проверяющих доступность endpoints и правильность настройки Spring Security.
+3 Config классы имеют 100% покрытие благодаря тесту загрузки контекста Spring.
+4 Общее покрытие 80% значительно превышает минимальный целевой показатель и соответствует уровню хорошо по индустриальным стандартам.
+В итоге было оценено качество кода.
+
 
 ---
 
 ## **Тестирование**
 
-### Unit-тесты
+<img width="883" height="177" alt="image" src="https://github.com/user-attachments/assets/31f13feb-e487-483e-afbc-06112a55b9d1" />
 
-Представить код тестов для пяти методов и его пояснение
+Тестирование системы ведения отчетности страхового портфеля
 
-### Интеграционные тесты
+<img width="835" height="304" alt="image" src="https://github.com/user-attachments/assets/7bf5fd25-96d0-4390-9b13-f76f1ff41e00" />
 
-Представить код тестов и его пояснение
+Тестирование моделей системы ведения отчетности страхового портфеля
+
+<img width="846" height="112" alt="image" src="https://github.com/user-attachments/assets/e7ed66e2-c67f-4f67-a3d3-ec2172548f0d" />
+
+Тестирование конфигураций системы ведения отчетности страхового портфеля
+
+<img width="845" height="229" alt="image" src="https://github.com/user-attachments/assets/b113f5b9-60a8-49f6-a45a-3d103316232d" />
+
+Тестирование контроллеров системы ведения отчетности страхового портфеля
 
 ---
 
@@ -331,11 +452,412 @@ User-flow для администратора
 
 ### Манифесты для сборки docker образов
 
-Представить весь код манифестов или ссылки на файлы с ними (при необходимости снабдить комментариями)
+services:
+  # База данных PostgreSQL
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: insurance_db
+      POSTGRES_USER: insurance_user
+      POSTGRES_PASSWORD: insurance_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql-scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U insurance_user -d insurance_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend приложение (Spring Boot)
+  insurance-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/insurance_db
+      - SPRING_DATASOURCE_USERNAME=insurance_user
+      - SPRING_DATASOURCE_PASSWORD=insurance_password
+      - JWT_SECRET=your-super-secret-jwt-key-for-docker
+      - ENCRYPTION_SECRET=your-encryption-secret-key-here
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./logs/backend:/app/logs
+
+  # Frontend приложение (React)
+  insurance-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080/api
+      - REACT_APP_WS_URL=ws://localhost:8080/ws
+    depends_on:
+      - insurance-backend
+    volumes:
+      - ./logs/frontend:/app/logs
+
+  # Админка для PostgreSQL (опционально)
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@insurance.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8081:80"
+    depends_on:
+      - postgres
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+
 
 ### Манифесты для развертывания k8s кластера
 
-Представить весь код манифестов или ссылки на файлы с ними (при необходимости снабдить комментариями)
+Namespace (00-namespace.yaml):
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: insurance-system
+  labels:
+    name: insurance-system
+    environment: production
+
+ConfigMaps и Secrets (01-configmaps-secrets.yaml):
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: insurance-system
+data:
+  SPRING_PROFILES_ACTIVE: "k8s"
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-service:5432/insurance_db"
+  LOGGING_LEVEL: "INFO"
+  SERVER_PORT: "8080"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: insurance-system
+data:
+  REACT_APP_API_URL: "http://backend-service:8080/api"
+  REACT_APP_WS_URL: "ws://backend-service:8080/ws"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  namespace: insurance-system
+type: Opaque
+stringData:
+  postgres-password: "insurance_password"
+  postgres-user: "insurance_user"
+  postgres-db: "insurance_db"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: jwt-secret
+  namespace: insurance-system
+type: Opaque
+stringData:
+  jwt-secret: "your-super-secret-jwt-key-for-production"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: encryption-secret
+  namespace: insurance-system
+type: Opaque
+stringData:
+  encryption-key: "your-encryption-secret-key-for-production"
+
+База данных PostgreSQL (02-postgresql.yaml):
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: insurance-system
+spec:
+  serviceName: postgres-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: postgres-db
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: postgres-user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: postgres-password
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+        - name: init-script
+          mountPath: /docker-entrypoint-initdb.d
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - insurance_user
+            - -d
+            - insurance_db
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - insurance_user
+            - -d
+            - insurance_db
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: init-script
+        configMap:
+          name: postgres-init
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: insurance-system
+spec:
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+  type: ClusterIP
+
+Backend приложение (03-backend-app.yaml):
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insurance-backend
+  namespace: insurance-system
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: insurance-backend
+  template:
+    metadata:
+      labels:
+        app: insurance-backend
+    spec:
+      containers:
+      - name: insurance-backend
+        image: insurance-system/insurance-backend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SPRING_PROFILES_ACTIVE
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SPRING_DATASOURCE_URL
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: postgres-user
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: postgres-password
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: jwt-secret
+              key: jwt-secret
+        - name: ENCRYPTION_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: encryption-secret
+              key: encryption-key
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: insurance-system
+spec:
+  selector:
+    app: insurance-backend
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30081
+  type: NodePort
+
+Frontend приложение (04-frontend-app.yaml):
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insurance-frontend
+  namespace: insurance-system
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: insurance-frontend
+  template:
+    metadata:
+      labels:
+        app: insurance-frontend
+    spec:
+      containers:
+      - name: insurance-frontend
+        image: insurance-system/insurance-frontend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env:
+        - name: REACT_APP_API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: frontend-config
+              key: REACT_APP_API_URL
+        - name: REACT_APP_WS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: frontend-config
+              key: REACT_APP_WS_URL
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "250m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: insurance-system
+spec:
+  selector:
+    app: insurance-frontend
+  ports:
+  - port: 3000
+    targetPort: 3000
+    nodePort: 30080
+  type: NodePort
+
+Ingress (05-ingress.yaml):
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: insurance-ingress
+  namespace: insurance-system
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: insurance.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 3000
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 8080
+
 
 ---
 
